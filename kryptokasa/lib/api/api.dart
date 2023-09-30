@@ -1,25 +1,15 @@
 import 'dart:async';
-import 'zonda.dart' as zonda;
 
-List<Future<ValueInfo?>Function()> markets = [
+List<Future<ExchangeInfo?>Function()> markets = [
 
 ];
 
-Future<List<ValueInfo?>?> getValues (String currency, String amount) async{
+class ExchangeInfo {
+  ExchangeInfo(this.marketUrl, this.marketName, this.inputCurrency, this.exchangeCurrency, this.exchangeRate);
 
-  final zondaTask = await zonda.getCryptoInfo(currency);
-
-  print (zondaTask?.rate);
-
-  return null;
-}
-
-class ValueInfo {
-  ValueInfo(this.marketUrl, this.marketName, this.value, this.polishValue, this.exchangeRate);
-
-  String marketUrl;
-  String marketName;
-  String value;
-  String polishValue;
-  String exchangeRate;
+  String marketName; // the name of the market
+  String marketUrl; // the link to the market
+  String inputCurrency;
+  String exchangeCurrency; 
+  String exchangeRate; // the exchange rate from InputCurrency to ExchangeCurrency (TargetCurrency is always PLN)
 }
