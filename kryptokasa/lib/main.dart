@@ -1,6 +1,7 @@
 import 'package:definitely_not_window/definitely_not_window.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'NaczelnicyUrzedowSkarbowych_Dropdown.dart';
 
 void main() {
@@ -146,15 +147,35 @@ class _HeadbarState extends State<Headbar> {
       child: Row(
         children: [
           padding(8),
-          Text(
-            "Kryptokasa.GOV",
-            style: GoogleFonts.inter(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
+          GestureDetector(
+            onPanStart: ((details) {
+              window.drag();
+            }),
+            onDoubleTap: () {
+              window.toggle();
+            },
+            child: Text(
+              "Kryptokasa.GOV",
+              style: GoogleFonts.inter(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
             ),
           ),
-          Expanded(child: Container()),
+          Expanded(
+            child: GestureDetector(
+              onPanStart: ((details) {
+                window.drag();
+              }),
+              onDoubleTap: () {
+                window.toggle();
+              },
+              child: Container(
+                color: const Color.fromARGB(255, 220, 0, 50),
+              ),
+            ),
+          ),
           WinBarButton(
             "🗕",
             action: () {
