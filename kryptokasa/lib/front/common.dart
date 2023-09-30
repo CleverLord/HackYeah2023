@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-Color red = const Color.fromARGB(255, 255, 0, 0);
+Color red = const Color.fromARGB(255, 220, 0, 50);
 Color blue = const Color.fromARGB(255, 0, 82, 164);
 
 class HeaderText extends StatelessWidget {

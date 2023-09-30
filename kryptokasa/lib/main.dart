@@ -62,7 +62,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Stack(
                   alignment: Alignment.centerLeft,
                   children: [
-                    //Create a header text
+                    //add gear icon in top right corner
+                    Positioned(
+                      top: 34.0,
+                      right: 34.0,
+                      child: Icon(
+                        Icons.settings,
+                        color: blue,
+                        size: 34.0,
+                      ),
+                    ),
                     Positioned(
                       top: 34.0,
                       left: 34.0,
@@ -81,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       top: 82.0,
                       left: 34.0,
                       child: Text(
-                        "Krok 1/2 - Dane podstawowe",
+                        "Krok 1/3 - Dane podstawowe",
                         textAlign: TextAlign.left,
                         style: GoogleFonts.inter(
                           color: Colors.black54,
@@ -235,9 +244,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     Positioned(
                       top: 82.0,
-                      left: 34.0,
+                      left: 34.0 + 550.0 + 34.0,
                       child: Text(
-                        "Krok 2/2 - Dane podstawowe",
+                        "Krok 2/3 - Edycja danych giełdowych",
                         textAlign: TextAlign.left,
                         style: GoogleFonts.inter(
                           color: Colors.black54,
@@ -282,7 +291,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     const TooltipText(
                                         "Wybierz organ egzekucyjny, który będzie egzekwował zobowiązanie"),
                                     padding(8),
-                                    const DropdownNaczelnicy(),
+                                    //const DropdownNaczelnicy(),
                                     padding(12),
                                     const HeaderText("Numer Sprawy"),
                                     const TooltipText(
@@ -314,7 +323,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
                                       inputFormatters: [
                                         // Allow only letters, numbers, slash, hyphen, and dot.
-                                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9/\-\.]')),
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp(r'[a-zA-Z0-9/\-\.ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]')),
                                       ],
                                       maxLength: 100,
                                     ),
@@ -348,14 +358,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
                                       inputFormatters: [
                                         // Allow only letters, numbers, slash, hyphen, and dot.
-                                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9/\-\.]')),
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp(r'[a-zA-Z0-9/\-\.ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]')),
                                       ],
                                       maxLength: 100,
                                     ),
                                     const HeaderText("Lista Kryptoaktyw"),
                                     const TooltipText("Wybierz i podaj ilość kryptoaktyw poddanych zablokowaniu"),
                                     padding(8),
-                                    ListKryptoaktyw(key: cryptoListKey),
+                                    const ListKryptoaktyw(),
                                   ],
                                 ),
                               ),
@@ -364,25 +375,61 @@ class _MyHomePageState extends State<MyHomePage> {
                             SizedBox(
                               width: double.infinity,
                               height: 50.0,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  ProcessTask((cryptoListKey.currentState! as ListKryptoaktywState).task())
-                                      .then((value) => print(value));
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(1),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 5,
+                                    child: SizedBox(
+                                      height: 50.0,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          ProcessTask((cryptoListKey.currentState! as ListKryptoaktywState).task())
+                                              .then((value) => print(value));
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(1),
+                                          ),
+                                          backgroundColor: blue,
+                                        ),
+                                        child: Text(
+                                          'Zatwierdź | Wygeneruj PDF',
+                                          style: GoogleFonts.inter(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                  backgroundColor: blue,
-                                ),
-                                child: Text(
-                                  'Zatwierdź | Następny krok',
-                                  style: GoogleFonts.inter(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 18,
+                                  padding(8),
+                                  Expanded(
+                                    child: SizedBox(
+                                      height: 50.0,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          ProcessTask((cryptoListKey.currentState! as ListKryptoaktywState).task())
+                                              .then((value) => print(value));
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(1),
+                                          ),
+                                          backgroundColor: red,
+                                        ),
+                                        child: Text(
+                                          'Cofnij',
+                                          style: GoogleFonts.inter(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
                             ),
                           ],
@@ -396,8 +443,8 @@ class _MyHomePageState extends State<MyHomePage> {
             Container(
               width: double.infinity,
               height: 24,
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 220, 0, 50),
+              decoration: BoxDecoration(
+                color: red,
               ),
               child: Center(
                 child: Text(
@@ -432,9 +479,7 @@ class _HeadbarState extends State<Headbar> {
     return Container(
       width: double.infinity,
       height: 42,
-      decoration: const BoxDecoration(
-        color: Color.fromARGB(255, 220, 0, 50),
-      ),
+      decoration: BoxDecoration(color: red),
       child: Row(
         children: [
           padding(8),
@@ -463,7 +508,7 @@ class _HeadbarState extends State<Headbar> {
                 window.toggle();
               },
               child: Container(
-                color: const Color.fromARGB(255, 220, 0, 50),
+                color: red,
               ),
             ),
           ),
