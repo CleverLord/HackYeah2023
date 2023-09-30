@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:kryptokasa/front/common.dart';
 import 'package:kryptokasa/main.dart';
 
 import '../get_NaczelnicyUrzedowSkarbowych_list.dart';
 
-class NaczelnicyUrzedowSkarbowych_Dropdown extends StatefulWidget {
-  const NaczelnicyUrzedowSkarbowych_Dropdown({super.key});
+class DropdownNaczelnicy extends StatefulWidget {
+  const DropdownNaczelnicy({super.key});
 
   @override
-  _NaczelnicyUrzedowSkarbowych_DropdownState createState() => _NaczelnicyUrzedowSkarbowych_DropdownState();
+  _DropdownNaczelnicyState createState() => _DropdownNaczelnicyState();
 }
 
-class _NaczelnicyUrzedowSkarbowych_DropdownState extends State<NaczelnicyUrzedowSkarbowych_Dropdown> {
+class _DropdownNaczelnicyState extends State<DropdownNaczelnicy> {
   String? value;
+  NaczelnikUrzeduSkarbowego? naczelnikUrzeduSkarbowego;
 
   late Future<List<NaczelnikUrzeduSkarbowego>> naczelnicyFuture;
 
   @override
   void initState() {
     super.initState();
-    naczelnicyFuture = getNaczelnicyUrzedowSkarbowych()!; // cache the Future here
+    naczelnicyFuture = getNaczelnicyUrzedowSkarbowych()!;
   }
 
   @override
@@ -28,13 +29,13 @@ class _NaczelnicyUrzedowSkarbowych_DropdownState extends State<NaczelnicyUrzedow
       future: naczelnicyFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          // While data is loading, show a loading indicator.
-          return const CircularProgressIndicator();
+          return CircularProgressIndicator(
+            color: red,
+            strokeWidth: 10,
+          );
         } else if (snapshot.hasError) {
-          // If there's an error, display an error message.
           return Text('Error: ${snapshot.error}');
         } else {
-          // If data is loaded successfully, create the dropdown.
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -44,24 +45,25 @@ class _NaczelnicyUrzedowSkarbowych_DropdownState extends State<NaczelnicyUrzedow
                   contentPadding: const EdgeInsets.all(12),
                   enabledBorder: OutlineInputBorder(
                     borderSide: const BorderSide(
-                      color: Colors.black12, // Kolor border w normalnym stanie
-                      width: 1.0, // Szerokość border w normalnym stanie
+                      color: Colors.black12,
+                      width: 1.0,
                     ),
-                    borderRadius: BorderRadius.circular(1.0), // Usuwanie zaokrąglenia
+                    borderRadius: BorderRadius.circular(1.0),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: const BorderSide(
-                      color: Colors.black, // Kolor border w stanie zaznaczenia
-                      width: 2.0, // Szerokość border w stanie zaznaczenia
+                      color: Colors.black,
+                      width: 2.0,
                     ),
-                    borderRadius: BorderRadius.circular(1.0), // Usuwanie zaokrąglenia
+                    borderRadius: BorderRadius.circular(1.0),
                   ),
                 ),
-                isExpanded: true, // This will make the dropdown expanded and remove the weird padding.
-                value: value, // Set the initial value or null.
+                isExpanded: true,
+                value: value,
                 onChanged: (String? newValue) {
                   setState(() {
                     value = newValue;
+                    naczelnikUrzeduSkarbowego = snapshot.data!.firstWhere((element) => element.name == value);
                   });
                 },
                 items: snapshot.data!.map<DropdownMenuItem<String>>((NaczelnikUrzeduSkarbowego value) {
@@ -74,33 +76,24 @@ class _NaczelnicyUrzedowSkarbowych_DropdownState extends State<NaczelnicyUrzedow
               value != null ? padding(8) : const SizedBox.shrink(),
               value != null
                   ? Container(
-                      //add border
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: Colors.black12,
                           width: 1.0,
                         ),
                         borderRadius: const BorderRadius.all(
-                          Radius.circular(2.0),
+                          Radius.circular(1.0),
                         ),
                       ),
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          //Add info icon
                           const Icon(Icons.info_outline_rounded),
                           padding(8),
                           Expanded(
-                            child: Text(
-                              "Obsluguje ${snapshot.data!.firstWhere((element) => element.name == value).description}",
-                              textAlign: TextAlign.left,
-                              //make text wrap
-                              style: GoogleFonts.inter(
-                                color: Colors.black54,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                              ),
+                            child: TooltipText(
+                              "Obsługuje ${naczelnikUrzeduSkarbowego!.description}",
                             ),
                           ),
                         ],

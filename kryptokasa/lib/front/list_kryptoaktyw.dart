@@ -3,22 +3,22 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kryptokasa/api/api.dart';
 
-class CryptoList extends StatefulWidget {
-  const CryptoList({super.key});
+class ListKryptoaktyw extends StatefulWidget {
+  const ListKryptoaktyw({super.key});
 
   @override
-  CryptoListState createState() => CryptoListState();
+  ListKryptoaktywState createState() => ListKryptoaktywState();
 }
 
-class CryptoListState extends State<CryptoList> {
-  List<CryptoRow> cryptoRows = [];
+class ListKryptoaktywState extends State<ListKryptoaktyw> {
+  List<RowKryptoaktywa> cryptoRows = [];
 
   CryptoTask task() {
     CryptoTask task = CryptoTask();
     task.cryptoPairs = [];
     for (var row in cryptoRows) {
-      task.cryptoPairs.add(CryptoPair((row.key.currentState as _CryptoRowState).selectedCrypto!,
-          (row.key.currentState as _CryptoRowState).amount!));
+      task.cryptoPairs.add(CryptoPair((row.key.currentState as _RowKryptoaktywaState).selectedCrypto!,
+          (row.key.currentState as _RowKryptoaktywaState).amount!));
     }
     return task;
   }
@@ -42,28 +42,31 @@ class CryptoListState extends State<CryptoList> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ...cryptoRows,
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                cryptoRows.add(CryptoRow(
-                  key: GlobalKey(), // using keys to identify rows uniquely
-                  onDelete: (key) {
-                    setState(() {
-                      cryptoRows.removeWhere((row) => row.key == key);
-                    });
-                  },
-                ));
-              });
-            },
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(1), // Zaokrąglenie rogu
+          SizedBox(
+            height: 38,
+            child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  cryptoRows.add(RowKryptoaktywa(
+                    key: GlobalKey(), // using keys to identify rows uniquely
+                    onDelete: (key) {
+                      setState(() {
+                        cryptoRows.removeWhere((row) => row.key == key);
+                      });
+                    },
+                  ));
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(1), // Zaokrąglenie rogu
+                ),
+                backgroundColor: const Color.fromARGB(255, 0, 82, 164), // Set the background color to blue
               ),
-              backgroundColor: const Color.fromARGB(255, 0, 82, 164), // Set the background color to blue
-            ),
-            child: Text(
-              'Nowy wiersz',
-              style: GoogleFonts.inter(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
+              child: Text(
+                'Nowy wiersz',
+                style: GoogleFonts.inter(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
+              ),
             ),
           ),
         ],
@@ -72,18 +75,18 @@ class CryptoListState extends State<CryptoList> {
   }
 }
 
-class CryptoRow extends StatefulWidget {
+class RowKryptoaktywa extends StatefulWidget {
   @override
   final GlobalKey key;
   final ValueChanged<Key> onDelete;
 
-  const CryptoRow({required this.key, required this.onDelete}) : super(key: key);
+  const RowKryptoaktywa({required this.key, required this.onDelete}) : super(key: key);
 
   @override
-  _CryptoRowState createState() => _CryptoRowState();
+  _RowKryptoaktywaState createState() => _RowKryptoaktywaState();
 }
 
-class _CryptoRowState extends State<CryptoRow> {
+class _RowKryptoaktywaState extends State<RowKryptoaktywa> {
   String? selectedCrypto;
   String? amount;
   List<String> cryptos = ['BTC', 'ETH', 'LTC']; // Example list of cryptocurrencies.
@@ -117,7 +120,7 @@ class _CryptoRowState extends State<CryptoRow> {
                     borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąglenia
                   ),
                 ),
-                hint: const Text('Select Crypto'),
+                hint: const Text('Wybierz kryptowalutę'),
                 value: selectedCrypto,
                 onChanged: (newValue) {
                   setState(() {

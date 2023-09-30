@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kryptokasa/api/api.dart';
-import 'package:kryptokasa/front/CryptoList.dart';
 import 'package:kryptokasa/front/common.dart';
+import 'package:kryptokasa/front/list_kryptoaktyw.dart';
 
-import 'front/NaczelnicyUrzedowSkarbowych_Dropdown.dart';
+import 'front/dropdown_naczelnicy.dart';
 
 void main() {
   //ensure windowo initialised
@@ -72,16 +72,16 @@ class _MyHomePageState extends State<MyHomePage> {
                         style: GoogleFonts.inter(
                           color: Colors.black,
                           fontWeight: FontWeight.w600,
-                          fontSize: 24,
+                          fontSize: 28,
                         ),
                       ),
                     ),
                     //Create step index text
                     Positioned(
-                      top: 132.0,
+                      top: 82.0,
                       left: 34.0,
                       child: Text(
-                        "Krok 1/3 - Dane podstawowe",
+                        "Krok 1/2 - Dane podstawowe",
                         textAlign: TextAlign.left,
                         style: GoogleFonts.inter(
                           color: Colors.black54,
@@ -91,12 +91,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     Positioned(
-                      top: 160.0,
+                      top: 114.0,
                       bottom: 34.0,
                       left: 34.0,
                       child: Container(
                         padding: const EdgeInsets.all(34.0),
-//drop fancy shadow
                         decoration: BoxDecoration(
                           color: Colors.white,
                           border: Border.all(
@@ -115,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ],
                         ),
-                        width: 600, // Adjust the width as needed
+                        width: 550, // Adjust the width as needed
                         child: Column(
                           children: [
                             Expanded(
@@ -123,45 +122,15 @@ class _MyHomePageState extends State<MyHomePage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "Organ Egzekucyjny",
-                                      textAlign: TextAlign.left,
-                                      style: GoogleFonts.inter(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Wybierz organ egzekucyjny, który będzie egzekwował zobowiązanie",
-                                      textAlign: TextAlign.left,
-                                      style: GoogleFonts.inter(
-                                        color: Colors.black54,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 12,
-                                      ),
-                                    ),
+                                    const HeaderText("Organ Egzekucyjny"),
+                                    const TooltipText(
+                                        "Wybierz organ egzekucyjny, który będzie egzekwował zobowiązanie"),
                                     padding(8),
-                                    const NaczelnicyUrzedowSkarbowych_Dropdown(),
+                                    const DropdownNaczelnicy(),
                                     padding(12),
-                                    Text(
-                                      "Numer Sprawy",
-                                      textAlign: TextAlign.left,
-                                      style: GoogleFonts.inter(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Podaj numer sprawy, w której organ egzekucyjny wydał decyzję o zablokowaniu kryptoaktyw",
-                                      textAlign: TextAlign.left,
-                                      style: GoogleFonts.inter(
-                                        color: Colors.black54,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 12,
-                                      ),
-                                    ),
+                                    const HeaderText("Numer Sprawy"),
+                                    const TooltipText(
+                                        "Podaj numer sprawy, w której organ egzekucyjny wydał decyzję o zablokowaniu kryptoaktyw"),
                                     padding(8),
                                     TextFormField(
                                       decoration: InputDecoration(
@@ -193,8 +162,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                       ],
                                       maxLength: 100,
                                     ),
-                                    headerText("Dane Właściciela Kryptoaktywa"),
-                                    tooltipText(
+                                    const HeaderText("Dane Właściciela Kryptoaktywa"),
+                                    const TooltipText(
                                         "Podaj dane właściciela kryptoaktywa, którego dotyczy wniosek o zablokowanie kryptoaktyw"),
                                     padding(8),
                                     TextFormField(
@@ -227,42 +196,184 @@ class _MyHomePageState extends State<MyHomePage> {
                                       ],
                                       maxLength: 100,
                                     ),
-                                    Text(
-                                      "Lista Kryptoaktyw",
-                                      textAlign: TextAlign.left,
-                                      style: GoogleFonts.inter(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Wybierz i podaj ilość kryptoaktyw poddanych zablokowaniu",
-                                      textAlign: TextAlign.left,
-                                      style: GoogleFonts.inter(
-                                        color: Colors.black54,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 12,
-                                      ),
-                                    ),
+                                    const HeaderText("Lista Kryptoaktyw"),
+                                    const TooltipText("Wybierz i podaj ilość kryptoaktyw poddanych zablokowaniu"),
                                     padding(8),
-                                    CryptoList(key: cryptoListKey),
+                                    ListKryptoaktyw(key: cryptoListKey),
                                   ],
                                 ),
                               ),
                             ),
                             padding(8),
                             SizedBox(
-                              width: double.infinity, // Makes the button stretch horizontally
-                              height: 50.0, // Sets the height of the button
+                              width: double.infinity,
+                              height: 50.0,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  ProcessTask((cryptoListKey.currentState! as CryptoListState).task())
+                                  ProcessTask((cryptoListKey.currentState! as ListKryptoaktywState).task())
                                       .then((value) => print(value));
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 0, 82, 164), // Set the background color to blue
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(1),
+                                  ),
+                                  backgroundColor: blue,
+                                ),
+                                child: Text(
+                                  'Zatwierdź | Następny krok',
+                                  style: GoogleFonts.inter(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 82.0,
+                      left: 34.0,
+                      child: Text(
+                        "Krok 2/2 - Dane podstawowe",
+                        textAlign: TextAlign.left,
+                        style: GoogleFonts.inter(
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 114.0,
+                      bottom: 34.0,
+                      left: 34.0 + 550.0 + 34.0,
+                      right: 34.0,
+                      child: Container(
+                        padding: const EdgeInsets.all(34.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Colors.black12,
+                            width: 1.0,
+                          ),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(2.0),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              spreadRadius: 1,
+                              blurRadius: 2,
+                              offset: const Offset(0, 1), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const HeaderText("Organ Egzekucyjny"),
+                                    const TooltipText(
+                                        "Wybierz organ egzekucyjny, który będzie egzekwował zobowiązanie"),
+                                    padding(8),
+                                    const DropdownNaczelnicy(),
+                                    padding(12),
+                                    const HeaderText("Numer Sprawy"),
+                                    const TooltipText(
+                                        "Podaj numer sprawy, w której organ egzekucyjny wydał decyzję o zablokowaniu kryptoaktyw"),
+                                    padding(8),
+                                    TextFormField(
+                                      decoration: InputDecoration(
+                                        isDense: true,
+                                        contentPadding: const EdgeInsets.all(12),
+                                        // Ustawianie border dla normalnego stanu
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Colors.black12, // Kolor border
+                                            width: 1.0, // Szerokość border w normalnym stanie
+                                          ),
+                                          borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
+                                        ),
+                                        // Ustawianie border dla stanu zaznaczenia
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Colors.black, // Kolor border w stanie zaznaczenia
+                                            width: 2.0, // Szerokość border w stanie zaznaczenia
+                                          ),
+                                          borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
+                                        ),
+                                      ),
+
+                                      cursorColor: Colors.black, // This changes the caret color.
+
+                                      inputFormatters: [
+                                        // Allow only letters, numbers, slash, hyphen, and dot.
+                                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9/\-\.]')),
+                                      ],
+                                      maxLength: 100,
+                                    ),
+                                    const HeaderText("Dane Właściciela Kryptoaktywa"),
+                                    const TooltipText(
+                                        "Podaj dane właściciela kryptoaktywa, którego dotyczy wniosek o zablokowanie kryptoaktyw"),
+                                    padding(8),
+                                    TextFormField(
+                                      decoration: InputDecoration(
+                                        isDense: true,
+                                        contentPadding: const EdgeInsets.all(12),
+                                        // Ustawianie border dla normalnego stanu
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Colors.black12, // Kolor border
+                                            width: 1.0, // Szerokość border w normalnym stanie
+                                          ),
+                                          borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
+                                        ),
+                                        // Ustawianie border dla stanu zaznaczenia
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Colors.black, // Kolor border w stanie zaznaczenia
+                                            width: 2.0, // Szerokość border w stanie zaznaczenia
+                                          ),
+                                          borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
+                                        ),
+                                      ),
+
+                                      cursorColor: Colors.black, // This changes the caret color.
+
+                                      inputFormatters: [
+                                        // Allow only letters, numbers, slash, hyphen, and dot.
+                                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9/\-\.]')),
+                                      ],
+                                      maxLength: 100,
+                                    ),
+                                    const HeaderText("Lista Kryptoaktyw"),
+                                    const TooltipText("Wybierz i podaj ilość kryptoaktyw poddanych zablokowaniu"),
+                                    padding(8),
+                                    ListKryptoaktyw(key: cryptoListKey),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            padding(8),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 50.0,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  ProcessTask((cryptoListKey.currentState! as ListKryptoaktywState).task())
+                                      .then((value) => print(value));
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(1),
+                                  ),
+                                  backgroundColor: blue,
                                 ),
                                 child: Text(
                                   'Zatwierdź | Następny krok',
@@ -287,6 +398,16 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 24,
               decoration: const BoxDecoration(
                 color: Color.fromARGB(255, 220, 0, 50),
+              ),
+              child: Center(
+                child: Text(
+                  'C 2021 - Krypto',
+                  style: GoogleFonts.inter(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 13,
+                  ),
+                ),
               ),
             ),
           ],
