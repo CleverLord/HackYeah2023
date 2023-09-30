@@ -1,6 +1,7 @@
 import 'package:definitely_not_window/definitely_not_window.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'NaczelnicyUrzedowSkarbowych_Dropdown.dart';
 
 void main() {
   //ensure windowo initialised
@@ -60,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       left: 10.0,
                       child: Container(
                         padding: const EdgeInsets.all(10.0),
-                        width: 300, // Adjust the width as needed
+                        width: 600, // Adjust the width as needed
                         decoration: BoxDecoration(
                           color: Colors.white,
                           border: Border.all(
@@ -93,25 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                                 maxLength: 100,
                               ),
-                              DropdownButtonFormField(
-                                decoration: const InputDecoration(
-                                  labelText: 'Nazwa kryptoaktywa',
-                                ),
-                                items: const [
-                                  DropdownMenuItem(
-                                    value: 'Bitcoin',
-                                    child: Text('Bitcoin'),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: 'Ethereum',
-                                    child: Text('Ethereum'),
-                                  ),
-                                  // dodaj inne opcje według potrzeb
-                                ],
-                                onChanged: (value) {
-                                  // zaktualizuj stan na wybraną wartość
-                                },
-                              ),
+                              NaczelnicyUrzedowSkarbowych_Dropdown(),
                               TextFormField(
                                 decoration: const InputDecoration(
                                   labelText: 'Ilości kryptoaktywów',
