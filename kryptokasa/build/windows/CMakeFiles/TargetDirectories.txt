@@ -1,0 +1,13 @@
+C:/Workspace/kryptokasa/build/windows/CMakeFiles/INSTALL.dir
+C:/Workspace/kryptokasa/build/windows/CMakeFiles/ALL_BUILD.dir
+C:/Workspace/kryptokasa/build/windows/CMakeFiles/ZERO_CHECK.dir
+C:/Workspace/kryptokasa/build/windows/flutter/CMakeFiles/flutter_wrapper_plugin.dir
+C:/Workspace/kryptokasa/build/windows/flutter/CMakeFiles/flutter_wrapper_app.dir
+C:/Workspace/kryptokasa/build/windows/flutter/CMakeFiles/flutter_assemble.dir
+C:/Workspace/kryptokasa/build/windows/flutter/CMakeFiles/INSTALL.dir
+C:/Workspace/kryptokasa/build/windows/runner/CMakeFiles/kryptokasa.dir
+C:/Workspace/kryptokasa/build/windows/runner/CMakeFiles/INSTALL.dir
+C:/Workspace/kryptokasa/build/windows/runner/CMakeFiles/ALL_BUILD.dir
+C:/Workspace/kryptokasa/build/windows/plugins/definitely_not_window/CMakeFiles/definitely_not_window_plugin.dir
+C:/Workspace/kryptokasa/build/windows/plugins/definitely_not_window/CMakeFiles/INSTALL.dir
+C:/Workspace/kryptokasa/build/windows/plugins/definitely_not_window/CMakeFiles/ALL_BUILD.dir

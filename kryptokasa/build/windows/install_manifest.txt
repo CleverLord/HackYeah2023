@@ -1,0 +1,11 @@
+C:/Workspace/kryptokasa/build/windows/runner/Debug/data/icudtl.dat
+C:/Workspace/kryptokasa/build/windows/runner/Debug/flutter_windows.dll
+C:/Workspace/kryptokasa/build/windows/runner/Debug/definitely_not_window_plugin.lib
+C:/Workspace/kryptokasa/build/windows/runner/Debug/data/flutter_assets/AssetManifest.bin
+C:/Workspace/kryptokasa/build/windows/runner/Debug/data/flutter_assets/AssetManifest.json
+C:/Workspace/kryptokasa/build/windows/runner/Debug/data/flutter_assets/FontManifest.json
+C:/Workspace/kryptokasa/build/windows/runner/Debug/data/flutter_assets/fonts/MaterialIcons-Regular.otf
+C:/Workspace/kryptokasa/build/windows/runner/Debug/data/flutter_assets/kernel_blob.bin
+C:/Workspace/kryptokasa/build/windows/runner/Debug/data/flutter_assets/NOTICES.Z
+C:/Workspace/kryptokasa/build/windows/runner/Debug/data/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
+C:/Workspace/kryptokasa/build/windows/runner/Debug/data/flutter_assets/shaders/ink_sparkle.frag

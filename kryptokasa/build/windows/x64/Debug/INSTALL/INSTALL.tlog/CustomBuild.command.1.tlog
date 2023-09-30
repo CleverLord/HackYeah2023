@@ -1,0 +1,10 @@
+^C:\WORKSPACE\KRYPTOKASA\BUILD\WINDOWS\CMAKEFILES\E37D6EBC4A48DF9BD6F0E56942F7F4DF\INSTALL_FORCE.RULE
+setlocal
+cd .
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
