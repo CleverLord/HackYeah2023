@@ -20,7 +20,11 @@ Future<List<NaczelnikUrzeduSkarbowego>>? getNaczelnicyUrzedowSkarbowych() async 
   List<NaczelnikUrzeduSkarbowego> result = [];
 
   var url = Uri.parse('https://sip.lex.pl/akty-prawne/dzu-dziennik-ustaw/wyznaczenie-organow-krajowej-administracji-skarbowej-do-wykonywania-18574815');
-  var response = await http.get(url);
+  var response = await http.get(url);// make try catch for that
+  /*
+    Error: ClientException with SocketException: Failed host lookup: 'sip.lex.pľ (OS Error, Nieznany host., errno = 11001), uri=https://sip.lex.pl/akty-prawne/dzu-dziennik-ustaw/voznaczenie-
+    organow-krajowej -administracji-skâ rbowej -do-wykonywania- 18574815
+  */ 
   if(response.statusCode != 200){
     return Future.error(Exception('Nie udało się pobrać danych ze strony. Problem z połączeniem. Kod błędu:' + response.statusCode.toString()));
   }
