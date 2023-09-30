@@ -1,5 +1,6 @@
 import 'package:definitely_not_window/definitely_not_window.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   //ensure windowo initialised
@@ -39,80 +40,158 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Container(
-              width: double.infinity,
-              height: 32,
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 234, 57, 75),
-//round bottom border to match top
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(8),
-                  bottomRight: Radius.circular(8),
+            const Headbar(),
+            Expanded(
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color.fromARGB(255, 240, 240, 245), Color.fromARGB(255, 255, 255, 255)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
                 ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: 8.0,
-                  left: 6.0,
-                  right: 6.0,
-                  bottom: 6.0,
-                ),
-                child: Row(
+                child: Stack(
+                  alignment: Alignment.centerLeft,
                   children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onPanStart: ((details) {
-                          window.drag();
-                        }),
-                        onDoubleTap: () {
-                          window.toggle();
-                        },
-                        child: const Center(
-                          child: Text(
-                            "[Drag me / Double click me]",
+                    Positioned(
+                      top: 10.0,
+                      bottom: 10.0,
+                      left: 10.0,
+                      child: Container(
+                        padding: const EdgeInsets.all(10.0),
+                        width: 300, // Adjust the width as needed
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Colors.black12,
+                            width: 1.0,
+                          ),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(2.0),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Nazwa organu egzekucyjnego',
+                                ),
+                                maxLength: 100, // limit znaków do 100
+                              ),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Numer sprawy',
+                                ),
+                                maxLength: 100,
+                              ),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Dane identyfikujące właściciela kryptoaktywa',
+                                ),
+                                maxLength: 100,
+                              ),
+                              DropdownButtonFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Nazwa kryptoaktywa',
+                                ),
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: 'Bitcoin',
+                                    child: Text('Bitcoin'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'Ethereum',
+                                    child: Text('Ethereum'),
+                                  ),
+                                  // dodaj inne opcje według potrzeb
+                                ],
+                                onChanged: (value) {
+                                  // zaktualizuj stan na wybraną wartość
+                                },
+                              ),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Ilości kryptoaktywów',
+                                ),
+                                keyboardType: TextInputType.number,
+                              ),
+                              // Dodaj więcej pól według potrzeb
+                            ],
                           ),
                         ),
                       ),
-                    ),
-                    WinBarButton(
-                      "Minimize",
-                      action: () {
-                        window.minimize();
-                      },
-                    ),
-                    padding(5),
-                    WinBarButton(
-                      window.isMaximized ? "Restore" : "Maximize",
-                      action: () {
-                        window.toggle();
-                        setState(() {});
-                      },
-                    ),
-                    padding(5),
-                    WinBarButton(
-                      "X",
-                      action: () {
-                        window.close();
-                      },
                     ),
                   ],
                 ),
               ),
             ),
-            Expanded(
-              child: Container(
-                color: const Color.fromARGB(255, 255, 255, 255),
-                child: const Center(
-                  child: Text(
-                    "Definitely Not Window",
-                  ),
-                ),
+            Container(
+              width: double.infinity,
+              height: 24,
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 220, 0, 50),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class Headbar extends StatefulWidget {
+  const Headbar({
+    super.key,
+  });
+
+  @override
+  State<Headbar> createState() => _HeadbarState();
+}
+
+class _HeadbarState extends State<Headbar> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 42,
+      decoration: const BoxDecoration(
+        color: Color.fromARGB(255, 220, 0, 50),
+      ),
+      child: Row(
+        children: [
+          padding(8),
+          Text(
+            "Kryptokasa.GOV",
+            style: GoogleFonts.inter(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+            ),
+          ),
+          Expanded(child: Container()),
+          WinBarButton(
+            "🗕",
+            action: () {
+              window.minimize();
+            },
+          ),
+          WinBarButton(
+            window.isMaximized ? "🗕" : "🗖",
+            action: () {
+              window.toggle();
+              setState(() {});
+            },
+          ),
+          WinBarButton(
+            "X",
+            action: () {
+              window.close();
+            },
+          ),
+        ],
       ),
     );
   }
@@ -165,18 +244,14 @@ class _WinBarButtonState extends State<WinBarButton> {
         }),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 100),
-          width: null,
-          height: double.infinity,
+          width: 42,
+          height: 42,
           decoration: BoxDecoration(
             color: _hover
                 ? _down
-                    ? const Color.fromARGB(255, 80, 80, 80)
-                    : const Color.fromARGB(255, 59, 59, 59)
-                : const Color.fromARGB(255, 44, 44, 44),
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(
-              color: const Color.fromARGB(255, 59, 59, 59),
-            ),
+                    ? const Color.fromARGB(255, 245, 216, 223)
+                    : const Color.fromARGB(255, 244, 72, 112)
+                : const Color.fromARGB(255, 220, 0, 50),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -185,6 +260,11 @@ class _WinBarButtonState extends State<WinBarButton> {
                 padding: const EdgeInsets.only(bottom: 1.0),
                 child: Text(
                   widget.data,
+                  style: GoogleFonts.inter(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
                 ),
               ),
             ),
