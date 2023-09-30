@@ -2,9 +2,11 @@ import 'package:definitely_not_window/definitely_not_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kryptokasa/CryptoList.dart';
+import 'package:kryptokasa/api/api.dart';
+import 'package:kryptokasa/front/CryptoList.dart';
+import 'package:kryptokasa/front/common.dart';
 
-import 'NaczelnicyUrzedowSkarbowych_Dropdown.dart';
+import 'front/NaczelnicyUrzedowSkarbowych_Dropdown.dart';
 
 void main() {
   //ensure windowo initialised
@@ -17,6 +19,8 @@ void main() {
   });
   runApp(const MyApp());
 }
+
+GlobalKey cryptoListKey = GlobalKey();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -137,6 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         fontSize: 12,
                                       ),
                                     ),
+                                    padding(8),
                                     const NaczelnicyUrzedowSkarbowych_Dropdown(),
                                     padding(12),
                                     Text(
@@ -188,24 +193,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                       ],
                                       maxLength: 100,
                                     ),
-                                    Text(
-                                      "Dane właściciela kryptoaktywa",
-                                      textAlign: TextAlign.left,
-                                      style: GoogleFonts.inter(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Podaj dane właściciela kryptoaktywa, którego dotyczy wniosek o zablokowanie kryptoaktyw",
-                                      textAlign: TextAlign.left,
-                                      style: GoogleFonts.inter(
-                                        color: Colors.black54,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 12,
-                                      ),
-                                    ),
+                                    headerText("Dane Właściciela Kryptoaktywa"),
+                                    tooltipText(
+                                        "Podaj dane właściciela kryptoaktywa, którego dotyczy wniosek o zablokowanie kryptoaktyw"),
                                     padding(8),
                                     TextFormField(
                                       decoration: InputDecoration(
@@ -256,7 +246,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       ),
                                     ),
                                     padding(8),
-                                    const CryptoList(),
+                                    CryptoList(key: cryptoListKey),
                                   ],
                                 ),
                               ),
@@ -267,7 +257,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               height: 50.0, // Sets the height of the button
                               child: ElevatedButton(
                                 onPressed: () {
-                                  // Handle the button press here
+                                  ProcessTask((cryptoListKey.currentState! as CryptoListState).task())
+                                      .then((value) => print(value));
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:

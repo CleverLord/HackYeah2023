@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kryptokasa/main.dart';
 
-import 'get_NaczelnicyUrzedowSkarbowych_list.dart';
+import '../get_NaczelnicyUrzedowSkarbowych_list.dart';
 
 class NaczelnicyUrzedowSkarbowych_Dropdown extends StatefulWidget {
   const NaczelnicyUrzedowSkarbowych_Dropdown({super.key});
