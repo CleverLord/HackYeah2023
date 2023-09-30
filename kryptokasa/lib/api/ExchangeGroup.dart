@@ -16,11 +16,20 @@ class ExchangeGroup{ // class group of exchanges
     rate=calculateRate(exchangeInfos.map((e) => double.parse(e.exchangeRate)).toList());
   }
 
-  ExchangeGroup(this.exchangeInfos, ExchangeGroup usd2pln_exchageGroup){ // Constructor for any other currency
+  ExchangeGroup.eur2pln(this.exchangeInfos){ // Constructor for euro2pln
+    inputCurrency="EUR";
+    outputCurrency="PLN";
+    rate=calculateRate(exchangeInfos.map((e) => double.parse(e.exchangeRate)).toList());
+  }
+
+  ExchangeGroup(this.exchangeInfos, ExchangeGroup usd2pln_exchageGroup, ExchangeGroup eur2pln_exchangeGroup){ // Constructor for any other currency
     inputCurrency=exchangeInfos[0].outputCurrency;
     //todo: make sure that all exchangeInfo have the same inputCurrency (but they probably will anyway)
 
-    List<double> rates=exchangeInfos.map((e) => double.parse(e.exchangeRate) * (e.outputCurrency=="PLN" ? 1 : usd2pln_exchageGroup.rate)).toList();
+    List<double> rates=exchangeInfos.map(
+      (e) => double.parse(e.exchangeRate) 
+      * (e.outputCurrency=="USD" ? usd2pln_exchageGroup.rate : e.outputCurrency=="EUR" ? eur2pln_exchangeGroup.rate : 1)
+      ).toList();
     rate=calculateRate(rates);
   }
 
