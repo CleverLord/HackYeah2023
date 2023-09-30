@@ -1,5 +1,5 @@
-import 'api.dart';
+import 'exchangeInfo.dart';
 
 abstract class Market {
-  Future<ExchangeInfo?> getValueInfo(String currency, String amount);
+  Future<ExchangeInfo?> getValueInfo(String imputCurrency);
 }
