@@ -1,6 +1,6 @@
 # HackYeah2023
 * [x] Sparsować listę maczelników
-* [ ] Sparsować listę urzędów
+* [x] Sparsować listę urzędów
 * [ ] Generowanie PDF
 * [ ] Generowanie Logów
 * [ ] Wprowadzanie Danych do Zapytania
