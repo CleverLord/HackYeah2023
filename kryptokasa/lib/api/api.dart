@@ -10,7 +10,6 @@ List<Future<ExchangeInfo?>Function(String inputCurrency)> markets = [
   ZondaMarket().getValueInfo
 ];
 
-
 class CryptoTask{ // class reprezenting UI input panel
   late List<CryptoPair> cryptoPairs;
 }
