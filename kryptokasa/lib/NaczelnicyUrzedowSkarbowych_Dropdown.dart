@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'get_NaczelnicyUrzedowSkarbowych_list.dart';
 
@@ -33,21 +34,36 @@ class _NaczelnicyUrzedowSkarbowych_DropdownState extends State<NaczelnicyUrzedow
           return Text('Error: ${snapshot.error}');
         } else {
           // If data is loaded successfully, create the dropdown.
-          return DropdownButton<String>(
-            isExpanded: true, // This will make the dropdown expanded and remove the weird padding.
-            hint: const Text("Wybierz naczelnika..."),
-            value: value, // Set the initial value or null.
-            onChanged: (String? newValue) {
-              setState(() {
-                value = newValue;
-              });
-            },
-            items: snapshot.data!.map<DropdownMenuItem<String>>((NaczelnikUrzeduSkarbowego value) {
-              return DropdownMenuItem<String>(
-                value: value.name,
-                child: Text(value.name),
-              );
-            }).toList(),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              DropdownButton<String>(
+                isExpanded: true, // This will make the dropdown expanded and remove the weird padding.
+                value: value, // Set the initial value or null.
+                onChanged: (String? newValue) {
+                  setState(() {
+                    value = newValue;
+                  });
+                },
+                items: snapshot.data!.map<DropdownMenuItem<String>>((NaczelnikUrzeduSkarbowego value) {
+                  return DropdownMenuItem<String>(
+                    value: value.name,
+                    child: Text(value.name),
+                  );
+                }).toList(),
+              ),
+              value != null
+                  ? Text(
+                      "Obsluguje ${snapshot.data!.firstWhere((element) => element.name == value).description}",
+                      textAlign: TextAlign.left,
+                      style: GoogleFonts.inter(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 12,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ],
           );
         }
       },
