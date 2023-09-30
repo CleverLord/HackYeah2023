@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kryptokasa/main.dart';
 
 import 'get_NaczelnicyUrzedowSkarbowych_list.dart';
 
@@ -37,7 +38,25 @@ class _NaczelnicyUrzedowSkarbowych_DropdownState extends State<NaczelnicyUrzedow
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              DropdownButton<String>(
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  isDense: true,
+                  contentPadding: const EdgeInsets.all(12),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: Colors.black12, // Kolor border w normalnym stanie
+                      width: 1.0, // Szerokość border w normalnym stanie
+                    ),
+                    borderRadius: BorderRadius.circular(1.0), // Usuwanie zaokrąglenia
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: Colors.black, // Kolor border w stanie zaznaczenia
+                      width: 2.0, // Szerokość border w stanie zaznaczenia
+                    ),
+                    borderRadius: BorderRadius.circular(1.0), // Usuwanie zaokrąglenia
+                  ),
+                ),
                 isExpanded: true, // This will make the dropdown expanded and remove the weird padding.
                 value: value, // Set the initial value or null.
                 onChanged: (String? newValue) {
@@ -52,14 +71,39 @@ class _NaczelnicyUrzedowSkarbowych_DropdownState extends State<NaczelnicyUrzedow
                   );
                 }).toList(),
               ),
+              value != null ? padding(8) : const SizedBox.shrink(),
               value != null
-                  ? Text(
-                      "Obsluguje ${snapshot.data!.firstWhere((element) => element.name == value).description}",
-                      textAlign: TextAlign.left,
-                      style: GoogleFonts.inter(
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 12,
+                  ? Container(
+                      //add border
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black12,
+                          width: 1.0,
+                        ),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(2.0),
+                        ),
+                      ),
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          //Add info icon
+                          const Icon(Icons.info_outline_rounded),
+                          padding(8),
+                          Expanded(
+                            child: Text(
+                              "Obsluguje ${snapshot.data!.firstWhere((element) => element.name == value).description}",
+                              textAlign: TextAlign.left,
+                              //make text wrap
+                              style: GoogleFonts.inter(
+                                color: Colors.black54,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     )
                   : const SizedBox.shrink(),

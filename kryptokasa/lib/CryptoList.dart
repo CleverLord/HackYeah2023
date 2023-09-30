@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kryptokasa/main.dart';
 
@@ -20,11 +21,11 @@ class _CryptoListState extends State<CryptoList> {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(
-          color: Colors.black,
+          color: Colors.black12,
           width: 1.0,
         ),
         borderRadius: const BorderRadius.all(
-          Radius.circular(4.0),
+          Radius.circular(2.0),
         ),
       ),
       child: Column(
@@ -80,7 +81,25 @@ class _CryptoRowState extends State<CryptoRow> {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          DropdownButton<String>(
+          DropdownButtonFormField<String>(
+            decoration: InputDecoration(
+              isDense: true,
+              contentPadding: const EdgeInsets.all(12),
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.black12, // Kolor border w normalnym stanie
+                  width: 1.0, // Szerokość border w normalnym stanie
+                ),
+                borderRadius: BorderRadius.circular(1.0), // Usuwanie zaokrąglenia
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.black, // Kolor border w stanie zaznaczenia
+                  width: 2.0, // Szerokość border w stanie zaznaczenia
+                ),
+                borderRadius: BorderRadius.circular(1.0), // Usuwanie zaokrąglenia
+              ),
+            ),
             hint: const Text('Select Crypto'),
             value: selectedCrypto,
             onChanged: (newValue) {
@@ -97,10 +116,38 @@ class _CryptoRowState extends State<CryptoRow> {
           ),
           padding(8),
           Expanded(
-            child: TextField(
+            child: TextFormField(
+              decoration: InputDecoration(
+                hintText: "Ilość",
+                hintStyle: GoogleFonts.inter(color: Colors.black38, fontSize: 14, fontWeight: FontWeight.w400),
+                isDense: true,
+                contentPadding: const EdgeInsets.all(12),
+                // Ustawianie border dla normalnego stanu
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Colors.black12, // Kolor border
+                    width: 1.0, // Szerokość border w normalnym stanie
+                  ),
+                  borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
+                ),
+                // Ustawianie border dla stanu zaznaczenia
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Colors.black, // Kolor border w stanie zaznaczenia
+                    width: 2.0, // Szerokość border w stanie zaznaczenia
+                  ),
+                  borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
+                ),
+              ),
               onChanged: (value) {
                 amount = value;
               },
+              cursorColor: Colors.black, // This changes the caret color.
+
+              inputFormatters: [
+                // Allow only numbers, and ,.
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9\,]')),
+              ],
             ),
           ),
           padding(8),

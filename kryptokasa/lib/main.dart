@@ -63,12 +63,26 @@ class _MyHomePageState extends State<MyHomePage> {
                       top: 34.0,
                       left: 34.0,
                       child: Text(
-                        "Wniosek o zablokowanie kryptoaktyw w celu egzekucji",
+                        "Kreator wniosku o zablokowanie kryptoaktyw w celu egzekucji",
                         textAlign: TextAlign.left,
                         style: GoogleFonts.inter(
                           color: Colors.black,
                           fontWeight: FontWeight.w600,
                           fontSize: 24,
+                        ),
+                      ),
+                    ),
+                    //Create step index text
+                    Positioned(
+                      top: 132.0,
+                      left: 34.0,
+                      child: Text(
+                        "Krok 1/3 - Dane podstawowe",
+                        textAlign: TextAlign.left,
+                        style: GoogleFonts.inter(
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
                         ),
                       ),
                     ),
@@ -99,115 +113,155 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         width: 600, // Adjust the width as needed
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Organ Egzekucyjny",
-                              textAlign: TextAlign.left,
-                              style: GoogleFonts.inter(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                              ),
-                            ),
-                            Text(
-                              "Wybierz organ egzekucyjny, który będzie egzekwował zobowiązanie",
-                              textAlign: TextAlign.left,
-                              style: GoogleFonts.inter(
-                                color: Colors.black54,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                              ),
-                            ),
-                            const NaczelnicyUrzedowSkarbowych_Dropdown(),
-                            padding(12),
-                            Text(
-                              "Numer Sprawy",
-                              textAlign: TextAlign.left,
-                              style: GoogleFonts.inter(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                              ),
-                            ),
-                            Text(
-                              "Podaj numer sprawy, w której organ egzekucyjny wydał decyzję o zablokowaniu kryptoaktyw",
-                              textAlign: TextAlign.left,
-                              style: GoogleFonts.inter(
-                                color: Colors.black54,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                              ),
-                            ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black), // This changes the focus color.
+                            Expanded(
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Organ Egzekucyjny",
+                                      textAlign: TextAlign.left,
+                                      style: GoogleFonts.inter(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Wybierz organ egzekucyjny, który będzie egzekwował zobowiązanie",
+                                      textAlign: TextAlign.left,
+                                      style: GoogleFonts.inter(
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    const NaczelnicyUrzedowSkarbowych_Dropdown(),
+                                    padding(12),
+                                    Text(
+                                      "Numer Sprawy",
+                                      textAlign: TextAlign.left,
+                                      style: GoogleFonts.inter(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Podaj numer sprawy, w której organ egzekucyjny wydał decyzję o zablokowaniu kryptoaktyw",
+                                      textAlign: TextAlign.left,
+                                      style: GoogleFonts.inter(
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    padding(8),
+                                    TextFormField(
+                                      decoration: InputDecoration(
+                                        isDense: true,
+                                        contentPadding: const EdgeInsets.all(12),
+                                        // Ustawianie border dla normalnego stanu
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Colors.black12, // Kolor border
+                                            width: 1.0, // Szerokość border w normalnym stanie
+                                          ),
+                                          borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
+                                        ),
+                                        // Ustawianie border dla stanu zaznaczenia
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Colors.black, // Kolor border w stanie zaznaczenia
+                                            width: 2.0, // Szerokość border w stanie zaznaczenia
+                                          ),
+                                          borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
+                                        ),
+                                      ),
+
+                                      cursorColor: Colors.black, // This changes the caret color.
+
+                                      inputFormatters: [
+                                        // Allow only letters, numbers, slash, hyphen, and dot.
+                                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9/\-\.]')),
+                                      ],
+                                      maxLength: 100,
+                                    ),
+                                    Text(
+                                      "Dane właściciela kryptoaktywa",
+                                      textAlign: TextAlign.left,
+                                      style: GoogleFonts.inter(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Podaj dane właściciela kryptoaktywa, którego dotyczy wniosek o zablokowanie kryptoaktyw",
+                                      textAlign: TextAlign.left,
+                                      style: GoogleFonts.inter(
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    padding(8),
+                                    TextFormField(
+                                      decoration: InputDecoration(
+                                        isDense: true,
+                                        contentPadding: const EdgeInsets.all(12),
+                                        // Ustawianie border dla normalnego stanu
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Colors.black12, // Kolor border
+                                            width: 1.0, // Szerokość border w normalnym stanie
+                                          ),
+                                          borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
+                                        ),
+                                        // Ustawianie border dla stanu zaznaczenia
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Colors.black, // Kolor border w stanie zaznaczenia
+                                            width: 2.0, // Szerokość border w stanie zaznaczenia
+                                          ),
+                                          borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
+                                        ),
+                                      ),
+
+                                      cursorColor: Colors.black, // This changes the caret color.
+
+                                      inputFormatters: [
+                                        // Allow only letters, numbers, slash, hyphen, and dot.
+                                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9/\-\.]')),
+                                      ],
+                                      maxLength: 100,
+                                    ),
+                                    Text(
+                                      "Lista Kryptoaktyw",
+                                      textAlign: TextAlign.left,
+                                      style: GoogleFonts.inter(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Wybierz i podaj ilość kryptoaktyw poddanych zablokowaniu",
+                                      textAlign: TextAlign.left,
+                                      style: GoogleFonts.inter(
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    padding(8),
+                                    const CryptoList(),
+                                  ],
                                 ),
-                              ),
-
-                              cursorColor: Colors.black, // This changes the caret color.
-
-                              inputFormatters: [
-                                // Allow only letters, numbers, slash, hyphen, and dot.
-                                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9/\-\.]')),
-                              ],
-                              maxLength: 100,
-                            ),
-                            Text(
-                              "Dane właściciela kryptoaktywa",
-                              textAlign: TextAlign.left,
-                              style: GoogleFonts.inter(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                              ),
-                            ),
-                            Text(
-                              "Podaj dane właściciela kryptoaktywa, którego dotyczy wniosek o zablokowanie kryptoaktyw",
-                              textAlign: TextAlign.left,
-                              style: GoogleFonts.inter(
-                                color: Colors.black54,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                              ),
-                            ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black), // This changes the focus color.
-                                ),
-                              ),
-
-                              cursorColor: Colors.black, // This changes the caret color.
-
-                              inputFormatters: [
-                                // Allow only letters, numbers, slash, hyphen, and dot.
-                                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9/\-\.]')),
-                              ],
-                              maxLength: 100,
-                            ),
-                            Text(
-                              "Lista Kryptoaktyw",
-                              textAlign: TextAlign.left,
-                              style: GoogleFonts.inter(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                              ),
-                            ),
-                            Text(
-                              "Wybierz i podaj ilość kryptoaktyw poddanych zablokowaniu",
-                              textAlign: TextAlign.left,
-                              style: GoogleFonts.inter(
-                                color: Colors.black54,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
                               ),
                             ),
                             padding(8),
-                            const CryptoList(),
-                            Expanded(child: Container()),
                             SizedBox(
                               width: double.infinity, // Makes the button stretch horizontally
                               height: 50.0, // Sets the height of the button
