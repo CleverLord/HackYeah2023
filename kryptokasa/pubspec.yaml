@@ -33,6 +33,8 @@ dependencies:
   definitely_not_window:
     git: "https://github.com/define-laavi/definitely_not_window.git"
   cupertino_icons: ^1.0.2
+  html: ^0.15.4
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:
