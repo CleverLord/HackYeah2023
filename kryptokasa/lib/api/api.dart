@@ -44,7 +44,6 @@ Future<CryptoResult> ProcessTask(CryptoTask task) async {
     //find all of the tasks with this input currency
     List<CryptoPair> tasks = task.cryptoPairs.where((element) => element.inputCurrency == inputCurrency).toList();
     //for each task, create CryptoConversion
-    result.cryptoConversions = [];
     for (var task in tasks) {
       CryptoConversion cryptoConversion =
           CryptoConversion(task, exchangeGroup, (double.parse(task.amount) * exchangeGroup.rate).toString());
@@ -76,7 +75,7 @@ class CryptoPair {
 
 class CryptoResult {
   // class representing single output row
-  late List<CryptoConversion> cryptoConversions;
+  late List<CryptoConversion> cryptoConversions=[];
   late ExchangeGroup usd2pln_exchangeGroup;
   late ExchangeGroup eur2pln_exchangeGroup;
   //Todo, Mateusz: add more field you would like to display

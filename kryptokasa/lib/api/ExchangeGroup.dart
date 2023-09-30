@@ -23,7 +23,8 @@ class ExchangeGroup{ // class group of exchanges
   }
 
   ExchangeGroup(this.exchangeInfos, ExchangeGroup usd2pln_exchageGroup, ExchangeGroup eur2pln_exchangeGroup){ // Constructor for any other currency
-    inputCurrency=exchangeInfos[0].outputCurrency;
+    inputCurrency=exchangeInfos[0].inputCurrency;
+    outputCurrency=exchangeInfos[0].outputCurrency;
     //todo: make sure that all exchangeInfo have the same inputCurrency (but they probably will anyway)
 
     List<double> rates=exchangeInfos.map(
@@ -59,7 +60,7 @@ class ExchangeGroup{ // class group of exchanges
     List<double> ratesWithoutOutliers = [];
     double mean = getMean(rates);
     for (double rate in rates){
-      if (rate<mean+2*standardDeviation && rate>mean-2*standardDeviation){
+      if (rate<=mean+2*standardDeviation && rate>=mean-2*standardDeviation){
         ratesWithoutOutliers.add(rate);
         rateCountUsedToCalculateRate++;
       }
