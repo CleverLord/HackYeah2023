@@ -789,9 +789,6 @@ class GenerationInfo extends StatelessWidget {
           padding(8),
           const TooltipText("Data wygenerowania danych: ", fontSize: 14),
           const HeaderText("12.05.2021"),
-          padding(8),
-          const TooltipText("Godzina wygenerowania danych: ", fontSize: 14),
-          const HeaderText("12:00"),
           Expanded(child: Container()),
           //refresh icon
           GestureDetector(
