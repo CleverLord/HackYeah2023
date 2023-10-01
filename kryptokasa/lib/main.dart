@@ -10,6 +10,9 @@ import 'package:kryptokasa/front/list_kryptoaktyw.dart';
 
 import 'front/dropdown_naczelnicy.dart';
 import 'front/table_legend.dart';
+import 'package:kryptokasa/settings.dart' as settings;
+import 'package:kryptokasa/api/pdf_gen.dart' as settings;
+
 
 void main() {
   //ensure windowo initialised
@@ -64,6 +67,19 @@ class _MyHomePageState extends State<MyHomePage> {
     key: inputWlascicielKey,
     regex: r'^[a-zA-Z0-9\s]+$',
   );
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    Future.microtask(() async {
+      await settings.initSettings();
+
+      await settings.createPdf();
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -344,7 +360,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                       kursNaPLN: snapshot
                                                               .data!.plnExchange[exchangeData.exchangeCurrency]?.rate ??
                                                           "",
-                                                      wartoscWPLN: exchangeData.exchangeRate,
+                                                      wartoscWPLN: exchangeData.polishValue,
                                                     ),
                                                 ],
                                                 inputs: [
@@ -970,9 +986,6 @@ class GenerationInfo extends StatelessWidget {
           padding(8),
           const TooltipText("Data wygenerowania danych: ", fontSize: 14),
           const HeaderText("12.05.2021"),
-          padding(8),
-          const TooltipText("Godzina wygenerowania danych: ", fontSize: 14),
-          const HeaderText("12:00"),
           Expanded(child: Container()),
           //refresh icon
           GestureDetector(
