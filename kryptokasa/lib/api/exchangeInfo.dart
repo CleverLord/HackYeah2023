@@ -28,12 +28,49 @@ class ExchangeInfo {
     exchangeValue = excVal.toString();
     
     if (exchangeCurrency == 'PLN') {
-      polishValue = exchangeValue;
+      polishValue = roundToTwo(exchangeValue);
       return;
     }
 
     final val = Decimal.parse(rate) * Decimal.parse(exchangeValue);
 
     polishValue = val.toString();
+    polishValue = roundToTwo(polishValue);
+  }
+
+  //Function that takes String, that contains a number and returns it as a String rounded to 2 decimal places
+  //String might contain a dot, or a comma, or nothing
+  //If there is nothing add .00
+  String roundToTwo(String val) {
+    final dot = val.indexOf('.');
+    final comma = val.indexOf(',');
+
+    if (dot == -1 && comma == -1) {
+      return '$val.00';
+    }
+
+    if (dot != -1) {
+      final afterDot = val.substring(dot + 1);
+      if (afterDot.length == 1) {
+        return '$val' + '0';
+      }
+      if (afterDot.length == 2) {
+        return val;
+      }
+      return val.substring(0, dot + 3);
+    }
+
+    if (comma != -1) {
+      final afterComma = val.substring(comma + 1);
+      if (afterComma.length == 1) {
+        return '$val' + '0';
+      }
+      if (afterComma.length == 2) {
+        return val;
+      }
+      return val.substring(0, comma + 3);
+    }
+
+    return val;
   }
 }
