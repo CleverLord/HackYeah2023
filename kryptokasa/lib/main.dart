@@ -9,6 +9,9 @@ import 'package:kryptokasa/front/list_kryptoaktyw.dart';
 
 import 'front/dropdown_naczelnicy.dart';
 import 'front/table_legend.dart';
+import 'package:kryptokasa/settings.dart' as settings;
+import 'package:kryptokasa/api/pdf_gen.dart' as settings;
+
 
 void main() {
   //ensure windowo initialised
@@ -58,6 +61,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    Future.microtask(() async {
+      await settings.initSettings();
+
+      await settings.createPdf();
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

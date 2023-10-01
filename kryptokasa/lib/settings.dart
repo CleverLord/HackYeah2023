@@ -25,8 +25,16 @@ Future<void> initSettings () async{
        }
      }
 
-     repPath ??= '${appDocPath}Raporty Kryptowalut\\';
-     logPath ??= '${appDocPath}Logi kryptowalut\\';
+     reportSavePath = '${appDocPath}Raporty Kryptowalut\\';
+     Directory rDir = Directory(reportSavePath);
+     if (!await rDir.exists()) {
+       rDir.create(recursive: true);
+     }
+     logsSavePath = '${appDocPath}Logi kryptowalut\\';
+     Directory lDir = Directory(reportSavePath);
+     if (!await lDir.exists()) {
+       lDir.create(recursive: true);
+     }
    }
 }
 

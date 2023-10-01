@@ -3,7 +3,7 @@
 * [x] Sparsować listę urzędów
 * [ ] Generowanie PDF
 * [ ] Generowanie Logów
-* [ ] Wprowadzanie Danych do Zapytania
-* [ ] Zapytanie i zwrot danych
+* [x] Wprowadzanie Danych do Zapytania
+* [x] Zapytanie i zwrot danych
 * [ ] Ustawienia
-* [ ] Dodać więcej giełd
+* [x] Dodać więcej giełd
