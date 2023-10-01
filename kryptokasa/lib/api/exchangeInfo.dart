@@ -28,7 +28,7 @@ class ExchangeInfo {
     exchangeValue = excVal.toString();
     
     if (exchangeCurrency == 'PLN') {
-      polishValue = exchangeRate;
+      polishValue = exchangeValue;
       return;
     }
 
