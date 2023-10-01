@@ -336,7 +336,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                       kursNaPLN: snapshot
                                                               .data!.plnExchange[exchangeData.exchangeCurrency]?.rate ??
                                                           "",
-                                                      wartoscWPLN: exchangeData.exchangeRate,
+                                                      wartoscWPLN: exchangeData.polishValue,
                                                     ),
                                                 ],
                                               ),

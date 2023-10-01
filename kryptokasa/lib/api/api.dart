@@ -65,22 +65,21 @@ Future<CryptoResult> ProcessTask(CryptoTask task) async {
 
   //return data
   List<CryptoConversion> conversions = List.generate(orders.length, (index) {
-    final order = orders[index];
+    final order = orders[index]; // get ETH task
 
-    final List<ExchangeInfo> inf = [];
-    final exi = inquiries[order.inputCurrency];
+    final List<ExchangeInfo> inf = []; // create list of ETH -> X
+    final exi = inquiries[order.inputCurrency]; // Get rates to EUR, USD, PLN for ETX from all markets
 
-    if (exi != null) {
-      for (ExchangeInfo ex in exi) {
-        final curInfo = exchangeNbp[ex.exchangeCurrency];
-
+    if (exi != null) { //if there any rates
+      for (ExchangeInfo ex in exi) { // take an exchange rate
+        final curInfo = exchangeNbp[ex.exchangeCurrency]; // this is null if we tried to convert from PLN to PLN
         String rate = '0';
 
-        if (curInfo != null) {
+        if (curInfo != null) { // this is null for ex.exchangeCurrency == 'PLN'
           rate = curInfo.rate;
         }
 
-        ExchangeInfo e = ExchangeInfo.copy(ex);
+        ExchangeInfo e = ExchangeInfo.copy(ex);// crate a copy of ETH -> EUR/USD
         e.calcValue(rate, order.amount!);
         inf.add(e);
       }
