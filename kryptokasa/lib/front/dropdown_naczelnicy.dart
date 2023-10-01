@@ -29,9 +29,15 @@ class _DropdownNaczelnicyState extends State<DropdownNaczelnicy> {
       future: naczelnicyFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator(
-            color: red,
-            strokeWidth: 10,
+          return Center(
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: CircularProgressIndicator(
+                color: red,
+                strokeWidth: 6,
+              ),
+            ),
           );
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
@@ -84,6 +90,7 @@ class _DropdownNaczelnicyState extends State<DropdownNaczelnicy> {
                         borderRadius: const BorderRadius.all(
                           Radius.circular(1.0),
                         ),
+                        color: blue.withAlpha(20),
                       ),
                       padding: const EdgeInsets.all(8.0),
                       child: Row(

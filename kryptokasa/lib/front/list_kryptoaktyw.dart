@@ -119,8 +119,9 @@ class _RowKryptoaktywaState extends State<RowKryptoaktywa> {
                     ),
                     borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąglenia
                   ),
+                  hintStyle: GoogleFonts.inter(color: Colors.black38, fontSize: 14, fontWeight: FontWeight.w400),
+                  hintText: 'Wybierz kryptowalutę',
                 ),
-                hint: const Text('Wybierz kryptowalutę'),
                 value: selectedCrypto,
                 onChanged: (newValue) {
                   setState(() {

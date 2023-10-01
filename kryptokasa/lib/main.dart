@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:definitely_not_window/definitely_not_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,20 +8,24 @@ import 'package:kryptokasa/front/common.dart';
 import 'package:kryptokasa/front/list_kryptoaktyw.dart';
 
 import 'front/dropdown_naczelnicy.dart';
+import 'front/table_legend.dart';
 
 void main() {
   //ensure windowo initialised
   WidgetsFlutterBinding.ensureInitialized();
 
   onWindowReady(() {
-    window.title = "<Title>";
+    window.title = "Kryptokasa.GOV";
     window.minSize = const Size(1000, 500);
     window.show();
   });
   runApp(const MyApp());
 }
 
-GlobalKey cryptoListKey = GlobalKey();
+GlobalKey listKryptoaktywaKey = GlobalKey();
+GlobalKey dropdownNaczelnicyKey = GlobalKey();
+GlobalKey inputSprawaKey = GlobalKey();
+GlobalKey inputWlascicielKey = GlobalKey();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -62,7 +67,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Stack(
                   alignment: Alignment.centerLeft,
                   children: [
-                    //add gear icon in top right corner
+                    //Title
+                    Positioned(
+                      top: 34.0,
+                      left: 34.0,
+                      child: Text(
+                        "Kreator szacunkowych wartości kryptoaktyw",
+                        textAlign: TextAlign.left,
+                        style: GoogleFonts.inter(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 28,
+                        ),
+                      ),
+                    ),
+                    //Settings
                     Positioned(
                       top: 34.0,
                       right: 34.0,
@@ -72,39 +91,28 @@ class _MyHomePageState extends State<MyHomePage> {
                         size: 34.0,
                       ),
                     ),
+                    //History
                     Positioned(
                       top: 34.0,
-                      left: 34.0,
-                      child: Text(
-                        "Kreator wniosku o zablokowanie kryptoaktyw w celu egzekucji",
-                        textAlign: TextAlign.left,
-                        style: GoogleFonts.inter(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 28,
-                        ),
+                      right: 80.0,
+                      child: Icon(
+                        Icons.history,
+                        color: blue,
+                        size: 34.0,
                       ),
                     ),
-                    //Create step index text
-                    Positioned(
+
+                    const StepHeader(
                       top: 82.0,
                       left: 34.0,
-                      child: Text(
-                        "Krok 1/3 - Dane podstawowe",
-                        textAlign: TextAlign.left,
-                        style: GoogleFonts.inter(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                      ),
+                      text: "Krok 1/3 - Dane podstawowe",
                     ),
                     Positioned(
                       top: 114.0,
                       bottom: 34.0,
                       left: 34.0,
                       child: Container(
-                        padding: const EdgeInsets.all(34.0),
+                        padding: const EdgeInsets.symmetric(vertical: 34.0, horizontal: 22.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           border: Border.all(
@@ -112,14 +120,14 @@ class _MyHomePageState extends State<MyHomePage> {
                             width: 1.0,
                           ),
                           borderRadius: const BorderRadius.all(
-                            Radius.circular(2.0),
+                            Radius.circular(1.0),
                           ),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.1),
                               spreadRadius: 1,
                               blurRadius: 2,
-                              offset: const Offset(0, 1), // changes position of shadow
+                              offset: const Offset(0, 1),
                             ),
                           ],
                         ),
@@ -128,112 +136,77 @@ class _MyHomePageState extends State<MyHomePage> {
                           children: [
                             Expanded(
                               child: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const HeaderText("Organ Egzekucyjny"),
-                                    const TooltipText(
-                                        "Wybierz organ egzekucyjny, który będzie egzekwował zobowiązanie"),
-                                    padding(8),
-                                    const DropdownNaczelnicy(),
-                                    padding(12),
-                                    const HeaderText("Numer Sprawy"),
-                                    const TooltipText(
-                                        "Podaj numer sprawy, w której organ egzekucyjny wydał decyzję o zablokowaniu kryptoaktyw"),
-                                    padding(8),
-                                    TextFormField(
-                                      decoration: InputDecoration(
-                                        isDense: true,
-                                        contentPadding: const EdgeInsets.all(12),
-                                        // Ustawianie border dla normalnego stanu
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Colors.black12, // Kolor border
-                                            width: 1.0, // Szerokość border w normalnym stanie
-                                          ),
-                                          borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
-                                        ),
-                                        // Ustawianie border dla stanu zaznaczenia
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Colors.black, // Kolor border w stanie zaznaczenia
-                                            width: 2.0, // Szerokość border w stanie zaznaczenia
-                                          ),
-                                          borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
-                                        ),
-                                      ),
-
-                                      cursorColor: Colors.black, // This changes the caret color.
-
-                                      inputFormatters: [
-                                        // Allow only letters, numbers, slash, hyphen, and dot.
-                                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9/\-\.]')),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      ...[
+                                        const HeaderText("Organ Egzekucyjny"),
+                                        const TooltipText(
+                                            "Wybierz organ egzekucyjny, który będzie egzekwował zobowiązanie"),
+                                        const ErrorText("Błąd: Organ egzekucyjny nie został wybrany"),
+                                        padding(8),
+                                        const DropdownNaczelnicy(),
+                                        padding(12),
                                       ],
-                                      maxLength: 100,
-                                    ),
-                                    const HeaderText("Dane Właściciela Kryptoaktywa"),
-                                    const TooltipText(
-                                        "Podaj dane właściciela kryptoaktywa, którego dotyczy wniosek o zablokowanie kryptoaktyw"),
-                                    padding(8),
-                                    TextFormField(
-                                      decoration: InputDecoration(
-                                        isDense: true,
-                                        contentPadding: const EdgeInsets.all(12),
-                                        // Ustawianie border dla normalnego stanu
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Colors.black12, // Kolor border
-                                            width: 1.0, // Szerokość border w normalnym stanie
-                                          ),
-                                          borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
+                                      ...[
+                                        const HeaderText("Numer Sprawy"),
+                                        const TooltipText(
+                                            "Podaj numer sprawy, w której organ egzekucyjny wydał decyzję o zablokowaniu kryptoaktyw"),
+                                        const ErrorText("Błąd: Pole nie może być puste"),
+                                        padding(8),
+                                        CustomTextField(
+                                          key: inputSprawaKey,
                                         ),
-                                        // Ustawianie border dla stanu zaznaczenia
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Colors.black, // Kolor border w stanie zaznaczenia
-                                            width: 2.0, // Szerokość border w stanie zaznaczenia
-                                          ),
-                                          borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
-                                        ),
-                                      ),
-
-                                      cursorColor: Colors.black, // This changes the caret color.
-
-                                      inputFormatters: [
-                                        // Allow only letters, numbers, slash, hyphen, and dot.
-                                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9/\-\.]')),
                                       ],
-                                      maxLength: 100,
-                                    ),
-                                    const HeaderText("Lista Kryptoaktyw"),
-                                    const TooltipText("Wybierz i podaj ilość kryptoaktyw poddanych zablokowaniu"),
-                                    padding(8),
-                                    ListKryptoaktyw(key: cryptoListKey),
-                                  ],
+                                      ...[
+                                        const HeaderText("Dane Właściciela/ki Kryptoaktyw"),
+                                        const TooltipText("Podaj dane osoby której dotyczy wniosek."),
+                                        const ErrorText("Błąd: Pole nie może być puste"),
+                                        padding(8),
+                                        CustomTextField(
+                                          key: inputWlascicielKey,
+                                        ),
+                                      ],
+                                      ...[
+                                        const HeaderText("Lista Kryptoaktyw"),
+                                        const TooltipText("Wybierz i podaj ilość kryptoaktyw do szacowania"),
+                                        const ErrorText("Błąd: Nie wszystkie pola zostały wypełnione"),
+                                        padding(8),
+                                        ListKryptoaktyw(
+                                          key: listKryptoaktywaKey,
+                                        ),
+                                      ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                             padding(8),
-                            SizedBox(
-                              width: double.infinity,
-                              height: 50.0,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  ProcessTask((cryptoListKey.currentState! as ListKryptoaktywState).task())
-                                      .then((value) => print(value));
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(1),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                              child: SizedBox(
+                                width: double.infinity,
+                                height: 50.0,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    ProcessTask((listKryptoaktywaKey.currentState! as ListKryptoaktywState).task())
+                                        .then((value) => print(value));
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(1),
+                                    ),
+                                    backgroundColor: blue,
                                   ),
-                                  backgroundColor: blue,
-                                ),
-                                child: Text(
-                                  'Zatwierdź | Następny krok',
-                                  style: GoogleFonts.inter(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 18,
+                                  child: Text(
+                                    'Zatwierdź | Następny krok',
+                                    style: GoogleFonts.inter(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -242,18 +215,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                     ),
-                    Positioned(
+                    const StepHeader(
                       top: 82.0,
                       left: 34.0 + 550.0 + 34.0,
-                      child: Text(
-                        "Krok 2/3 - Edycja danych giełdowych",
-                        textAlign: TextAlign.left,
-                        style: GoogleFonts.inter(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                      ),
+                      text: "Krok 2/3 - Podgląd i edycja danych giełdowych",
                     ),
                     Positioned(
                       top: 114.0,
@@ -282,91 +247,385 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         child: Column(
                           children: [
+                            const GenerationInfo(),
+                            padding(8),
+                            const TableLegend(),
+                            padding(4),
                             Expanded(
                               child: SingleChildScrollView(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const HeaderText("Organ Egzekucyjny"),
-                                    const TooltipText(
-                                        "Wybierz organ egzekucyjny, który będzie egzekwował zobowiązanie"),
-                                    padding(8),
-                                    //const DropdownNaczelnicy(),
-                                    padding(12),
-                                    const HeaderText("Numer Sprawy"),
-                                    const TooltipText(
-                                        "Podaj numer sprawy, w której organ egzekucyjny wydał decyzję o zablokowaniu kryptoaktyw"),
-                                    padding(8),
-                                    TextFormField(
-                                      decoration: InputDecoration(
-                                        isDense: true,
-                                        contentPadding: const EdgeInsets.all(12),
-                                        // Ustawianie border dla normalnego stanu
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Colors.black12, // Kolor border
-                                            width: 1.0, // Szerokość border w normalnym stanie
-                                          ),
-                                          borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
+                                    TableKryptowaluta(
+                                      kryptoaktywa: "Bitcoin (BTC)",
+                                      ilosc: "100,12",
+                                      data: [
+                                        //create test data for 3 different exchanges
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
                                         ),
-                                        // Ustawianie border dla stanu zaznaczenia
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Colors.black, // Kolor border w stanie zaznaczenia
-                                            width: 2.0, // Szerokość border w stanie zaznaczenia
-                                          ),
-                                          borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
                                         ),
-                                      ),
-
-                                      cursorColor: Colors.black, // This changes the caret color.
-
-                                      inputFormatters: [
-                                        // Allow only letters, numbers, slash, hyphen, and dot.
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp(r'[a-zA-Z0-9/\-\.ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]')),
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
                                       ],
-                                      maxLength: 100,
                                     ),
-                                    const HeaderText("Dane Właściciela Kryptoaktywa"),
-                                    const TooltipText(
-                                        "Podaj dane właściciela kryptoaktywa, którego dotyczy wniosek o zablokowanie kryptoaktyw"),
-                                    padding(8),
-                                    TextFormField(
-                                      decoration: InputDecoration(
-                                        isDense: true,
-                                        contentPadding: const EdgeInsets.all(12),
-                                        // Ustawianie border dla normalnego stanu
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Colors.black12, // Kolor border
-                                            width: 1.0, // Szerokość border w normalnym stanie
-                                          ),
-                                          borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
+                                    TableKryptowaluta(
+                                      kryptoaktywa: "Bitcoin (BTC)",
+                                      ilosc: "100,12",
+                                      data: [
+                                        //create test data for 3 different exchanges
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
                                         ),
-                                        // Ustawianie border dla stanu zaznaczenia
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Colors.black, // Kolor border w stanie zaznaczenia
-                                            width: 2.0, // Szerokość border w stanie zaznaczenia
-                                          ),
-                                          borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąg
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
                                         ),
-                                      ),
-
-                                      cursorColor: Colors.black, // This changes the caret color.
-
-                                      inputFormatters: [
-                                        // Allow only letters, numbers, slash, hyphen, and dot.
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp(r'[a-zA-Z0-9/\-\.ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]')),
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
                                       ],
-                                      maxLength: 100,
                                     ),
-                                    const HeaderText("Lista Kryptoaktyw"),
-                                    const TooltipText("Wybierz i podaj ilość kryptoaktyw poddanych zablokowaniu"),
-                                    padding(8),
-                                    const ListKryptoaktyw(),
+                                    TableKryptowaluta(
+                                      kryptoaktywa: "Bitcoin (BTC)",
+                                      ilosc: "100,12",
+                                      data: [
+                                        //create test data for 3 different exchanges
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                      ],
+                                    ),
+                                    TableKryptowaluta(
+                                      kryptoaktywa: "Bitcoin (BTC)",
+                                      ilosc: "100,12",
+                                      data: [
+                                        //create test data for 3 different exchanges
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                      ],
+                                    ),
+                                    TableKryptowaluta(
+                                      kryptoaktywa: "Bitcoin (BTC)",
+                                      ilosc: "100,12",
+                                      data: [
+                                        //create test data for 3 different exchanges
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                      ],
+                                    ),
+                                    TableKryptowaluta(
+                                      kryptoaktywa: "Bitcoin (BTC)",
+                                      ilosc: "100,12",
+                                      data: [
+                                        //create test data for 3 different exchanges
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                      ],
+                                    ),
+                                    TableKryptowaluta(
+                                      kryptoaktywa: "Bitcoin (BTC)",
+                                      ilosc: "100,12",
+                                      data: [
+                                        //create test data for 3 different exchanges
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                      ],
+                                    ),
+                                    TableKryptowaluta(
+                                      kryptoaktywa: "Bitcoin (BTC)",
+                                      ilosc: "100,12",
+                                      data: [
+                                        //create test data for 3 different exchanges
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                      ],
+                                    ),
+                                    TableKryptowaluta(
+                                      kryptoaktywa: "Bitcoin (BTC)",
+                                      ilosc: "100,12",
+                                      data: [
+                                        //create test data for 3 different exchanges
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                      ],
+                                    ),
+                                    TableKryptowaluta(
+                                      kryptoaktywa: "Bitcoin (BTC)",
+                                      ilosc: "100,12",
+                                      data: [
+                                        //create test data for 3 different exchanges
+                                        TableCryptoExchangeData(
+                                          status: "OK",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                        TableCryptoExchangeData(
+                                          status: "FAIL",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "BTC",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                        TableCryptoExchangeData(
+                                          status: "MANUAL",
+                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                          nazwa: "Satoshi Nakamoto",
+                                          kurs: "100,12",
+                                          waluta: "PLN",
+                                          wartosc: "100,12",
+                                          kursNaPLN: "100,12",
+                                          wartoscWPLN: "100,12",
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 ),
                               ),
@@ -383,7 +642,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                       height: 50.0,
                                       child: ElevatedButton(
                                         onPressed: () {
-                                          ProcessTask((cryptoListKey.currentState! as ListKryptoaktywState).task())
+                                          ProcessTask(
+                                                  (listKryptoaktywaKey.currentState! as ListKryptoaktywState).task())
                                               .then((value) => print(value));
                                         },
                                         style: ElevatedButton.styleFrom(
@@ -393,7 +653,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           backgroundColor: blue,
                                         ),
                                         child: Text(
-                                          'Zatwierdź | Wygeneruj PDF',
+                                          'Zatwierdź | Wygeneruj raport PDF',
                                           style: GoogleFonts.inter(
                                             color: Colors.white,
                                             fontWeight: FontWeight.w600,
@@ -409,7 +669,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                       height: 50.0,
                                       child: ElevatedButton(
                                         onPressed: () {
-                                          ProcessTask((cryptoListKey.currentState! as ListKryptoaktywState).task())
+                                          ProcessTask(
+                                                  (listKryptoaktywaKey.currentState! as ListKryptoaktywState).task())
                                               .then((value) => print(value));
                                         },
                                         style: ElevatedButton.styleFrom(
@@ -436,28 +697,387 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                     ),
+                    /*
+                    const ApprovedBlocker(
+                      top: 114.0,
+                      bottom: 34.0,
+                      left: 34.0,
+                    ),
+                    const ApprovedBlocker(
+                      top: 114.0,
+                      bottom: 34.0,
+                      left: 34.0 + 550.0 + 34.0,
+                      right: 34.0,
+                    ),*/
                   ],
                 ),
               ),
             ),
-            Container(
-              width: double.infinity,
-              height: 24,
-              decoration: BoxDecoration(
-                color: red,
-              ),
-              child: Center(
-                child: Text(
-                  'C 2021 - Krypto',
-                  style: GoogleFonts.inter(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 13,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TableCryptoExchangeData {
+  final String status;
+  final String adres;
+  final String nazwa;
+  final String kurs;
+  final String waluta;
+  final String wartosc;
+  final String kursNaPLN;
+  final String wartoscWPLN;
+
+  TableCryptoExchangeData(
+      {required this.status,
+      required this.adres,
+      required this.nazwa,
+      required this.kurs,
+      required this.waluta,
+      required this.wartosc,
+      required this.kursNaPLN,
+      required this.wartoscWPLN});
+}
+
+class TableKryptowaluta extends StatelessWidget {
+  final String kryptoaktywa;
+  final String ilosc;
+  final List<TableCryptoExchangeData> data;
+  const TableKryptowaluta({
+    super.key,
+    required this.kryptoaktywa,
+    required this.ilosc,
+    required this.data,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: IntrinsicHeight(
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Flexible(
+              flex: 98,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black12,
+                    width: 1.0,
+                  ),
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(1.0),
                   ),
                 ),
+                child: Center(child: HeaderText(kryptoaktywa)),
+              ),
+            ),
+            Flexible(
+              flex: 97,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black12,
+                    width: 1.0,
+                  ),
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(1.0),
+                  ),
+                ),
+                child: Center(child: HeaderText(ilosc)),
+              ),
+            ),
+            Flexible(
+              flex: 700,
+              child: Column(
+                children: [
+                  for (var exchangeData in data) TableRowKonwersja(exchangeData: exchangeData),
+                ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class TableRowKonwersja extends StatelessWidget {
+  final TableCryptoExchangeData exchangeData;
+  const TableRowKonwersja({
+    super.key,
+    required this.exchangeData,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 32,
+      child: Row(
+        children: [
+          Container(
+            height: 32,
+            width: 24,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.black12,
+                width: 1.0,
+              ),
+              borderRadius: const BorderRadius.all(
+                Radius.circular(1.0),
+              ),
+              //add color based on status
+              color: exchangeData.status == "OK"
+                  ? green
+                  : exchangeData.status == "FAIL"
+                      ? red
+                      : blue,
+            ),
+            child: Center(
+              //info icon
+              child: Icon(
+                //switch icon based on status
+                exchangeData.status == "OK"
+                    ? Icons.check_circle_outline_rounded
+                    : exchangeData.status == "FAIL"
+                        ? Icons.error_outline_rounded
+                        // writing manual data
+                        : Icons.edit_outlined,
+                color: Colors.white,
+                size: 16.0,
+              ),
+            ),
+          ),
+          TableText(exchangeData.adres, exchangeData.status),
+          TableText(exchangeData.nazwa, exchangeData.status),
+          TableText(exchangeData.kurs, exchangeData.status),
+          TableText(exchangeData.waluta, exchangeData.status),
+          TableText(exchangeData.wartosc, exchangeData.status),
+          ...exchangeData.waluta != "PLN"
+              ? [
+                  TableText(exchangeData.kursNaPLN, exchangeData.status),
+                  TableText(exchangeData.wartoscWPLN, exchangeData.status),
+                ]
+              : [
+                  TableText("——", exchangeData.status),
+                  TableText("——", exchangeData.status),
+                ],
+        ],
+      ),
+    );
+  }
+}
+
+class TableText extends StatelessWidget {
+  const TableText(
+    this.data,
+    this.status, {
+    super.key,
+  });
+
+  final String data;
+  final String status;
+
+  @override
+  Widget build(BuildContext context) {
+    return Flexible(
+      child: Container(
+        height: 32,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.black12,
+            width: 1.0,
+          ),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(1.0),
+          ),
+          //set alpha tint based on status
+          color: status == "OK"
+              ? green.withAlpha(20)
+              : status == "FAIL"
+                  ? red.withAlpha(20)
+                  : Colors.white.withAlpha(0),
+        ),
+        child: Center(child: HeaderText(data)),
+      ),
+    );
+  }
+}
+
+class GenerationInfo extends StatelessWidget {
+  const GenerationInfo({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.black12,
+          width: 1.0,
+        ),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(1.0),
+        ),
+      ),
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          const Icon(Icons.info_outline_rounded),
+          padding(8),
+          const TooltipText("Data wygenerowania danych: ", fontSize: 14),
+          const HeaderText("12.05.2021"),
+          padding(8),
+          const TooltipText("Godzina wygenerowania danych: ", fontSize: 14),
+          const HeaderText("12:00"),
+          Expanded(child: Container()),
+          //refresh icon
+          GestureDetector(
+            onTap: () {},
+            child: Icon(
+              Icons.refresh,
+              color: blue,
+              size: 24.0,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CustomTextField extends StatefulWidget {
+  const CustomTextField({
+    super.key,
+  });
+
+  @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  String? value;
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      decoration: InputDecoration(
+        isDense: true,
+        contentPadding: const EdgeInsets.all(12),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.black12,
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.circular(1),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.black,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(1),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: red,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(1),
+        ),
+      ),
+      cursorColor: Colors.black,
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9/\-\.]')),
+      ],
+      maxLength: 100,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Pole nie może być puste!';
+        }
+        return null;
+      },
+      onSaved: (value) {
+        setState(() {
+          this.value = value;
+        });
+      },
+    );
+  }
+}
+
+class StepHeader extends StatelessWidget {
+  final double top;
+  final double left;
+  final String text;
+  const StepHeader({
+    super.key,
+    required this.top,
+    required this.left,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: top,
+      left: left,
+      child: Text(
+        text,
+        textAlign: TextAlign.left,
+        style: GoogleFonts.inter(
+          color: Colors.black54,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
+      ),
+    );
+  }
+}
+
+class ApprovedBlocker extends StatelessWidget {
+  final double? top;
+  final double? bottom;
+  final double? left;
+  final double? right;
+  const ApprovedBlocker({
+    Key? key,
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: top,
+      bottom: bottom,
+      left: left,
+      right: right,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 34.0, horizontal: 22.0),
+        decoration: BoxDecoration(
+          color: Colors.white70,
+          border: Border.all(
+            color: Colors.black12,
+            width: 1.0,
+          ),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(1.0),
+          ),
+        ),
+        width: 550,
+        child: const Center(
+          child: Icon(
+            Icons.check_circle,
+            color: Color.fromARGB(255, 0, 160, 50),
+            size: 76.0,
+          ),
         ),
       ),
     );
@@ -482,7 +1102,14 @@ class _HeadbarState extends State<Headbar> {
       decoration: BoxDecoration(color: red),
       child: Row(
         children: [
+          //load logo
           padding(8),
+          Image.asset(
+            'assets/app_icon.png',
+            width: 16,
+            height: 16,
+          ),
+          padding(4),
           GestureDetector(
             onPanStart: ((details) {
               window.drag();
