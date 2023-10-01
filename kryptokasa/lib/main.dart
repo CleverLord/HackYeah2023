@@ -35,6 +35,8 @@ bool isDropdownNaczelnicyValid = true;
 bool isInputSprawaValid = true;
 bool isInputWlascicielValid = true;
 
+Future<CryptoResult>? cryptoConversionResult;
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -231,7 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                                     step = 2;
                                     setState(() {});
-                                    ProcessTask(task).then((value) => print(value));
+                                    cryptoConversionResult = ProcessTask(task);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     shape: RoundedRectangleBorder(
@@ -292,380 +294,56 @@ class _MyHomePageState extends State<MyHomePage> {
                             padding(4),
                             Expanded(
                               child: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    TableKryptowaluta(
-                                      kryptoaktywa: "Bitcoin (BTC)",
-                                      ilosc: "100,12",
-                                      data: [
-                                        //create test data for 3 different exchanges
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
+                                child: FutureBuilder(
+                                  future: cryptoConversionResult,
+                                  builder: (context, snapshot) {
+                                    //switch based on null and not waiting and success
+                                    if (cryptoConversionResult == null) {
+                                      return Container();
+                                    } else if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return Center(
+                                        child: SizedBox(
+                                          width: 40,
+                                          height: 40,
+                                          child: CircularProgressIndicator(
+                                            color: red,
+                                            strokeWidth: 6,
+                                          ),
                                         ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                      ],
-                                    ),
-                                    TableKryptowaluta(
-                                      kryptoaktywa: "Bitcoin (BTC)",
-                                      ilosc: "100,12",
-                                      data: [
-                                        //create test data for 3 different exchanges
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                      ],
-                                    ),
-                                    TableKryptowaluta(
-                                      kryptoaktywa: "Bitcoin (BTC)",
-                                      ilosc: "100,12",
-                                      data: [
-                                        //create test data for 3 different exchanges
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                      ],
-                                    ),
-                                    TableKryptowaluta(
-                                      kryptoaktywa: "Bitcoin (BTC)",
-                                      ilosc: "100,12",
-                                      data: [
-                                        //create test data for 3 different exchanges
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                      ],
-                                    ),
-                                    TableKryptowaluta(
-                                      kryptoaktywa: "Bitcoin (BTC)",
-                                      ilosc: "100,12",
-                                      data: [
-                                        //create test data for 3 different exchanges
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                      ],
-                                    ),
-                                    TableKryptowaluta(
-                                      kryptoaktywa: "Bitcoin (BTC)",
-                                      ilosc: "100,12",
-                                      data: [
-                                        //create test data for 3 different exchanges
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                      ],
-                                    ),
-                                    TableKryptowaluta(
-                                      kryptoaktywa: "Bitcoin (BTC)",
-                                      ilosc: "100,12",
-                                      data: [
-                                        //create test data for 3 different exchanges
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                      ],
-                                    ),
-                                    TableKryptowaluta(
-                                      kryptoaktywa: "Bitcoin (BTC)",
-                                      ilosc: "100,12",
-                                      data: [
-                                        //create test data for 3 different exchanges
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                      ],
-                                    ),
-                                    TableKryptowaluta(
-                                      kryptoaktywa: "Bitcoin (BTC)",
-                                      ilosc: "100,12",
-                                      data: [
-                                        //create test data for 3 different exchanges
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                      ],
-                                    ),
-                                    TableKryptowaluta(
-                                      kryptoaktywa: "Bitcoin (BTC)",
-                                      ilosc: "100,12",
-                                      data: [
-                                        //create test data for 3 different exchanges
-                                        TableCryptoExchangeData(
-                                          status: "OK",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "FAIL",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "BTC",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                        TableCryptoExchangeData(
-                                          status: "MANUAL",
-                                          adres: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-                                          nazwa: "Satoshi Nakamoto",
-                                          kurs: "100,12",
-                                          waluta: "PLN",
-                                          wartosc: "100,12",
-                                          kursNaPLN: "100,12",
-                                          wartoscWPLN: "100,12",
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                      );
+                                    } else if (snapshot.hasError) {
+                                      return Text('Error: ${snapshot.error}');
+                                    } else {
+                                      return Column(
+                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        children: [
+                                          if (snapshot.data != null)
+                                            for (var cryptoExchangeData in snapshot.data!.cryptoConversions)
+                                              TableKryptowaluta(
+                                                kryptoaktywa: cryptoExchangeData.task.inputCurrency!,
+                                                ilosc: cryptoExchangeData.task.amount!,
+                                                data: [
+                                                  for (var exchangeData in cryptoExchangeData.exchangeInfos)
+                                                    TableCryptoExchangeData(
+                                                      status: (exchangeData.isReached && exchangeData.isSuccess)
+                                                          ? "OK"
+                                                          : "FAIL",
+                                                      adres: exchangeData.marketUrl,
+                                                      nazwa: exchangeData.marketName,
+                                                      kurs: exchangeData.exchangeRate,
+                                                      waluta: exchangeData.exchangeCurrency,
+                                                      wartosc: exchangeData.exchangeValue,
+                                                      kursNaPLN: snapshot
+                                                              .data!.plnExchange[exchangeData.exchangeCurrency]?.rate ??
+                                                          "",
+                                                      wartoscWPLN: exchangeData.exchangeRate,
+                                                    ),
+                                                ],
+                                              ),
+                                        ],
+                                      );
+                                    }
+                                  },
                                 ),
                               ),
                             ),
@@ -1017,17 +695,30 @@ class TableRowKonwersja extends StatelessWidget {
               ),
             ),
           ),
-          TableText(exchangeData.adres, exchangeData.status),
-          TableText(exchangeData.nazwa, exchangeData.status),
-          TableText(exchangeData.kurs, exchangeData.status),
-          TableText(exchangeData.waluta, exchangeData.status),
-          TableText(exchangeData.wartosc, exchangeData.status),
-          ...exchangeData.waluta != "PLN"
+          ...exchangeData.status == "OK"
               ? [
-                  TableText(exchangeData.kursNaPLN, exchangeData.status),
-                  TableText(exchangeData.wartoscWPLN, exchangeData.status),
+                  TableText(exchangeData.adres, exchangeData.status),
+                  TableText(exchangeData.nazwa, exchangeData.status),
+                  TableText(exchangeData.kurs, exchangeData.status),
+                  TableText(exchangeData.waluta, exchangeData.status),
+                  ...exchangeData.waluta != "PLN"
+                      ? [
+                          TableText(exchangeData.wartosc, exchangeData.status),
+                          TableText(exchangeData.kursNaPLN, exchangeData.status),
+                          TableText(exchangeData.wartoscWPLN, exchangeData.status),
+                        ]
+                      : [
+                          TableText("——", exchangeData.status),
+                          TableText("——", exchangeData.status),
+                          TableText(exchangeData.wartosc, exchangeData.status),
+                        ],
                 ]
               : [
+                  TableText(exchangeData.adres, exchangeData.status),
+                  TableText(exchangeData.nazwa, exchangeData.status),
+                  TableText("——", exchangeData.status),
+                  TableText("——", exchangeData.status),
+                  TableText("——", exchangeData.status),
                   TableText("——", exchangeData.status),
                   TableText("——", exchangeData.status),
                 ],

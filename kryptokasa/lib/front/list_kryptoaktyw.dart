@@ -93,7 +93,7 @@ class RowKryptoaktywa extends StatefulWidget {
 class _RowKryptoaktywaState extends State<RowKryptoaktywa> {
   String? selectedCrypto;
   String? amount;
-  List<String> cryptos = ['BTC', 'ETH', 'LTC']; // Example list of cryptocurrencies.
+  List<String> cryptos = ['BTC', 'ETH', 'LTC', 'NLP']; // Example list of cryptocurrencies.
 
   @override
   Widget build(BuildContext context) {
