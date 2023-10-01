@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:decimal/decimal.dart';
 import 'package:definitely_not_window/definitely_not_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -58,6 +59,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  CustomTextField inputSprawa = CustomTextField(key: inputSprawaKey);
+  CustomTextField inputWlasciciel = CustomTextField(
+    key: inputWlascicielKey,
+    regex: r'^[a-zA-Z0-9\s]+$',
+  );
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,14 +173,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                             "Podaj numer sprawy, w której organ egzekucyjny wydał decyzję o zablokowaniu kryptoaktyw"),
                                         if (!isInputSprawaValid) const ErrorText("Błąd: Pole nie może być puste"),
                                         padding(8),
-                                        CustomTextField(key: inputSprawaKey),
+                                        inputSprawa,
                                       ],
                                       ...[
                                         const HeaderText("Dane Właściciela/ki Kryptoaktyw"),
                                         const TooltipText("Podaj dane osoby której dotyczy wniosek."),
                                         if (!isInputWlascicielValid) const ErrorText("Błąd: Pole nie może być puste"),
                                         padding(8),
-                                        CustomTextField(key: inputWlascicielKey),
+                                        inputWlasciciel,
                                       ],
                                       ...[
                                         const HeaderText("Lista Kryptoaktyw"),
@@ -320,6 +326,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                           if (snapshot.data != null)
                                             for (var cryptoExchangeData in snapshot.data!.cryptoConversions)
                                               TableKryptowaluta(
+                                                megaData: snapshot.data!,
+                                                fullData: cryptoExchangeData,
                                                 kryptoaktywa: cryptoExchangeData.task.inputCurrency!,
                                                 ilosc: cryptoExchangeData.task.amount!,
                                                 data: [
@@ -338,6 +346,20 @@ class _MyHomePageState extends State<MyHomePage> {
                                                           "",
                                                       wartoscWPLN: exchangeData.exchangeRate,
                                                     ),
+                                                ],
+                                                inputs: [
+                                                  for (var exchangeData in cryptoExchangeData.exchangeInfos)
+                                                    if (!exchangeData.isReached || !exchangeData.isSuccess)
+                                                      TableCryptoExchangeData(
+                                                        status: "MANUAL",
+                                                        adres: "",
+                                                        nazwa: "",
+                                                        kurs: "",
+                                                        waluta: "",
+                                                        wartosc: "",
+                                                        kursNaPLN: "",
+                                                        wartoscWPLN: "",
+                                                      ),
                                                 ],
                                               ),
                                         ],
@@ -358,11 +380,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: SizedBox(
                                       height: 50.0,
                                       child: ElevatedButton(
-                                        onPressed: () {
-                                          ProcessTask(
-                                                  (listKryptoaktywaKey.currentState! as ListKryptoaktywState).task())
-                                              .then((value) => print(value));
-                                        },
+                                        onPressed: () {},
                                         style: ElevatedButton.styleFrom(
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(1),
@@ -565,14 +583,14 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class TableCryptoExchangeData {
-  final String status;
-  final String adres;
-  final String nazwa;
-  final String kurs;
-  final String waluta;
-  final String wartosc;
-  final String kursNaPLN;
-  final String wartoscWPLN;
+  String status;
+  String adres;
+  String nazwa;
+  String kurs;
+  String waluta;
+  String wartosc;
+  String kursNaPLN;
+  String wartoscWPLN;
 
   TableCryptoExchangeData(
       {required this.status,
@@ -589,11 +607,18 @@ class TableKryptowaluta extends StatelessWidget {
   final String kryptoaktywa;
   final String ilosc;
   final List<TableCryptoExchangeData> data;
+  final List<TableCryptoExchangeData> inputs;
+  final CryptoConversion fullData;
+
+  final CryptoResult megaData;
   const TableKryptowaluta({
     super.key,
     required this.kryptoaktywa,
     required this.ilosc,
     required this.data,
+    required this.fullData,
+    this.inputs = const [],
+    required this.megaData,
   });
 
   @override
@@ -638,7 +663,17 @@ class TableKryptowaluta extends StatelessWidget {
               flex: 700,
               child: Column(
                 children: [
-                  for (var exchangeData in data) TableRowKonwersja(exchangeData: exchangeData),
+                  for (var exchangeData in data)
+                    TableRowKonwersja(
+                      exchangeData: exchangeData,
+                      fullData: fullData,
+                    ),
+                  for (var exchangeData in inputs)
+                    TableInput(
+                      exchangeData: exchangeData,
+                      fullData: fullData,
+                      megaData: megaData,
+                    ),
                 ],
               ),
             ),
@@ -651,9 +686,11 @@ class TableKryptowaluta extends StatelessWidget {
 
 class TableRowKonwersja extends StatelessWidget {
   final TableCryptoExchangeData exchangeData;
+  final CryptoConversion fullData;
   const TableRowKonwersja({
     super.key,
     required this.exchangeData,
+    required this.fullData,
   });
 
   @override
@@ -722,6 +759,150 @@ class TableRowKonwersja extends StatelessWidget {
                   TableText("——", exchangeData.status),
                   TableText("——", exchangeData.status),
                 ],
+        ],
+      ),
+    );
+  }
+}
+
+class TableInput extends StatefulWidget {
+  final TableCryptoExchangeData exchangeData;
+  final CryptoConversion fullData;
+  final CryptoResult megaData;
+
+  const TableInput({
+    super.key,
+    required this.exchangeData,
+    required this.fullData,
+    required this.megaData,
+  });
+
+  @override
+  State<TableInput> createState() => _TableInputState();
+}
+
+class _TableInputState extends State<TableInput> {
+  String selectedExchange = "PLN";
+  CustomTextField? adres;
+  CustomTextField? nazwa;
+  CustomTextField? kurs;
+
+  @override
+  void initState() {
+    adres = CustomTextField(
+      maxLength: null,
+      regex: r'[a-zA-Z0-9/\-\.\:]',
+    );
+    adres!.myController.addListener(() {
+      widget.exchangeData.adres = adres!.myController.text;
+      setState(() {});
+    });
+    nazwa = CustomTextField(maxLength: null);
+    nazwa!.myController.addListener(() {
+      widget.exchangeData.nazwa = nazwa!.myController.text;
+      setState(() {});
+    });
+    kurs = CustomTextField(maxLength: null, regex: r'[0-9\.]');
+    kurs!.myController.addListener(() {
+      widget.exchangeData.kurs = kurs!.myController.text;
+      setState(() {});
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var kursValue = Decimal.tryParse(widget.exchangeData.kurs) ?? Decimal.zero;
+    widget.exchangeData.wartosc = "${(Decimal.parse(widget.fullData.task.amount!) * kursValue)}";
+    widget.exchangeData.kursNaPLN = widget.megaData.plnExchange[selectedExchange]?.rate ?? "0";
+    widget.exchangeData.wartoscWPLN =
+        "${(Decimal.parse(widget.fullData.task.amount!) * kursValue * Decimal.parse(widget.megaData.plnExchange[selectedExchange]?.rate ?? "1"))}";
+
+    return SizedBox(
+      height: 32,
+      child: Row(
+        children: [
+          Container(
+            height: 32,
+            width: 24,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.black12,
+                width: 1.0,
+              ),
+              borderRadius: const BorderRadius.all(
+                Radius.circular(1.0),
+              ),
+              //add color based on status
+              color: widget.exchangeData.status == "OK"
+                  ? green
+                  : widget.exchangeData.status == "FAIL"
+                      ? red
+                      : blue,
+            ),
+            child: Center(
+              //info icon
+              child: Icon(
+                //switch icon based on status
+                widget.exchangeData.status == "OK"
+                    ? Icons.check_circle_outline_rounded
+                    : widget.exchangeData.status == "FAIL"
+                        ? Icons.error_outline_rounded
+                        // writing manual data
+                        : Icons.edit_outlined,
+                color: Colors.white,
+                size: 16.0,
+              ),
+            ),
+          ),
+          Flexible(child: adres!),
+          Flexible(child: nazwa!),
+          Flexible(child: kurs!),
+          Flexible(
+            child: DropdownButtonFormField<String>(
+              decoration: InputDecoration(
+                isDense: true,
+                contentPadding: const EdgeInsets.all(12),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Colors.black12, // Kolor border w normalnym stanie
+                    width: 1.0, // Szerokość border w normalnym stanie
+                  ),
+                  borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąglenia
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Colors.black, // Kolor border w stanie zaznaczenia
+                    width: 2.0, // Szerokość border w stanie zaznaczenia
+                  ),
+                  borderRadius: BorderRadius.circular(1), // Usuwanie zaokrąglenia
+                ),
+                hintStyle: GoogleFonts.inter(color: Colors.black38, fontSize: 14, fontWeight: FontWeight.w400),
+                hintText: 'Waluta',
+              ),
+              value: selectedExchange,
+              onChanged: (newValue) {
+                setState(() {
+                  selectedExchange = newValue!;
+                });
+              },
+              items: ["USD", "PLN", "EUR"].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
+          if (selectedExchange == "PLN") ...[
+            TableText("——", widget.exchangeData.status),
+            TableText("——", widget.exchangeData.status),
+            TableText(widget.exchangeData.wartoscWPLN, widget.exchangeData.status),
+          ] else ...[
+            TableText(widget.exchangeData.wartosc, widget.exchangeData.status),
+            TableText(widget.exchangeData.kursNaPLN, widget.exchangeData.status),
+            TableText(widget.exchangeData.wartoscWPLN, widget.exchangeData.status),
+          ],
         ],
       ),
     );
@@ -809,9 +990,14 @@ class GenerationInfo extends StatelessWidget {
 }
 
 class CustomTextField extends StatefulWidget {
-  const CustomTextField({
+  final int? maxLength;
+  CustomTextField({
     super.key,
+    this.maxLength = 100,
+    this.regex = r'^[a-zA-Z0-9]+$',
   });
+  final myController = TextEditingController();
+  final String regex;
 
   @override
   State<CustomTextField> createState() => CustomTextFieldState();
@@ -819,14 +1005,13 @@ class CustomTextField extends StatefulWidget {
 
 class CustomTextFieldState extends State<CustomTextField> {
   String? value;
-  final myController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    myController.addListener(
+    widget.myController.addListener(
       () => setState(() {
-        value = myController.text;
+        value = widget.myController.text;
       }),
     );
   }
@@ -834,14 +1019,13 @@ class CustomTextFieldState extends State<CustomTextField> {
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
-    myController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: myController,
+      controller: widget.myController,
       decoration: InputDecoration(
         isDense: true,
         contentPadding: const EdgeInsets.all(12),
@@ -869,12 +1053,11 @@ class CustomTextFieldState extends State<CustomTextField> {
       ),
       cursorColor: Colors.black,
       inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9/\-\.]')),
+        FilteringTextInputFormatter.allow(RegExp(widget.regex)),
       ],
-      maxLength: 100,
+      maxLength: widget.maxLength,
       onSaved: (value) {
         setState(() {
-          print(value);
           this.value = value;
         });
       },
