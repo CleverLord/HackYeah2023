@@ -174,7 +174,7 @@ class _RowKryptoaktywaState extends State<RowKryptoaktywa> {
 
                 inputFormatters: [
                   // Allow only numbers, and ,.
-                  FilteringTextInputFormatter.allow(RegExp(r'[0-9\,]')),
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
                 ],
               ),
             ),

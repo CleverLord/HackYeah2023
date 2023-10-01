@@ -17,7 +17,6 @@ Future<void> createPdf() async {
   ));
 
   String path = '${settings.reportSavePath}example.pdf';
-  print(path);
   final file = File(path);
   await file.writeAsBytes(await doc.save());
 }
