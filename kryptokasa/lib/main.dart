@@ -5,14 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kryptokasa/api/api.dart';
+import 'package:kryptokasa/api/pdf_gen.dart' as settings;
 import 'package:kryptokasa/front/common.dart';
 import 'package:kryptokasa/front/list_kryptoaktyw.dart';
+import 'package:kryptokasa/settings.dart' as settings;
 
 import 'front/dropdown_naczelnicy.dart';
 import 'front/table_legend.dart';
-import 'package:kryptokasa/settings.dart' as settings;
-import 'package:kryptokasa/api/pdf_gen.dart' as settings;
-
 
 void main() {
   //ensure windowo initialised
@@ -74,9 +73,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
     Future.microtask(() async {
       await settings.initSettings();
-
-      await settings.createPdf();
-
     });
   }
 
@@ -396,7 +392,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: SizedBox(
                                       height: 50.0,
                                       child: ElevatedButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          settings.createPdf();
+                                        },
                                         style: ElevatedButton.styleFrom(
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(1),

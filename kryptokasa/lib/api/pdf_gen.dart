@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:kryptokasa/front/dropdown_naczelnicy.dart';
+import 'package:kryptokasa/main.dart';
+import 'package:kryptokasa/settings.dart' as settings;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:kryptokasa/settings.dart' as settings;
 
 Future<void> createPdf() async {
   final doc = pw.Document();
@@ -21,36 +23,52 @@ Future<void> createPdf() async {
 }
 
 pw.Widget _buildHeader(pw.Context context) {
+  var font = pw.Font.ttf(File('assets/Inter.ttf').readAsBytesSync().buffer.asByteData());
   return pw.Column(
     mainAxisSize: pw.MainAxisSize.min,
     children: [
       pw.Container(
         height: 200,
-        child: pw.Text(',,Szacowanie wartości kryptoaktywów”'),
-
+        child: pw.Text('Szacowanie wartości kryptoaktywów',
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold, font: font, fontSize: 24)),
       ),
-      pw.Row(
-        children: [
-          pw.Column(
-            mainAxisSize: pw.MainAxisSize.min,
-            mainAxisAlignment: pw.MainAxisAlignment.start,
-            children: [
-              pw.Text('ID raportu'),
-              pw.Text('Raport z dnia'),
-              pw.Text('Numer sprawy'),
-              pw.Text('Dane właściciela'),
-              pw.Text('Średnia wartość aktywów')
-            ],
-          ),
-        ],
+      pw.Container(
+        decoration: pw.BoxDecoration(border: pw.Border.all(color: PdfColors.black, width: 1)),
+        padding: const pw.EdgeInsets.all(8),
+        child: pw.Column(
+          mainAxisAlignment: pw.MainAxisAlignment.start,
+          crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+          children: [
+            pw.Row(
+              children: [
+                pw.Text('Numer sprawy: ', style: pw.TextStyle(fontWeight: pw.FontWeight.normal, font: font)),
+                pw.Text((inputSprawaKey.currentState as CustomTextFieldState).value!,
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold, font: font)),
+              ],
+            ),
+            pw.Row(
+              children: [
+                pw.Text('Dane właściciela: ', style: pw.TextStyle(fontWeight: pw.FontWeight.normal, font: font)),
+                pw.Text((inputWlascicielKey.currentState as CustomTextFieldState).value!,
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold, font: font)),
+              ],
+            ),
+            pw.Row(
+              children: [
+                pw.Text('Organ egzekujacy: ', style: pw.TextStyle(fontWeight: pw.FontWeight.normal, font: font)),
+                pw.Text((dropdownNaczelnicyKey.currentState as DropdownNaczelnicyState).value!,
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold, font: font)),
+              ],
+            ),
+          ],
+        ),
       ),
-
     ],
   );
 }
 
 List<pw.Widget> _buildBody(pw.Context context) {
   return [
-    pw.Text('test'),
+    pw.Text('Brak kontunuacji :<< bo czasu brak'),
   ];
 }
