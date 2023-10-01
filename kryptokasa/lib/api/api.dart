@@ -1,64 +1,108 @@
 import 'dart:async';
+import 'dart:collection';
 
-import 'package:kryptokasa/api/npb.dart';
-import 'package:kryptokasa/api/zonda.dart';
+import 'package:kryptokasa/api/currency_info.dart';
+import 'package:kryptokasa/api/nbp.dart' as nbp;
+import 'package:kryptokasa/api/markets/zonda.dart' as zonda;
+import 'package:kryptokasa/api/markets/gemini.dart' as gemini;
 
-import 'ExchangeGroup.dart';
 import 'exchangeInfo.dart';
-import 'market_interface.dart';
+import 'package:decimal/decimal.dart';
+
+List<Future<ExchangeInfo> Function (String)> _exchangeMarkets = [
+  zonda.getValueInfo,
+  gemini.getValueInfo
+];
 
 Future<CryptoResult> ProcessTask(CryptoTask task) async {
   // main function, which is called from UI
 
-  CryptoResult result = CryptoResult();
+  final HashMap<String, CurrencyInfo?> exchangeNbp = HashMap.from({
+    'USD': null,
+    'EUR': null
+  });
+  String tableDate = 'Nie udało się pobrać tabeli NBP.';
 
-  //iterate through all the tasks and give them indexes
-  for (int i = 0; i < task.cryptoPairs.length; i++) {
-    task.cryptoPairs[i].index = i;
-  }
+  List<Future<CurrencyInfo?>> jobs = [];
+  exchangeNbp.forEach((key, value) {
+    Future<CurrencyInfo?> exchange = nbp.getValueInfo(key);
+    jobs.add(exchange);
+  });
 
-  //go through all the rows in the task and get all unique input currencies
-  List<String> inputCurrencies = task.cryptoPairs.map((e) => e.inputCurrency).toSet().toList();
-
-  //For next step we will need USD to PLN exchange rate
-  List<ExchangeInfo?> usdToPlnNullable = await Future.wait(markets.map((e) => e.getValueInfo("USD")));
-  usdToPlnNullable.removeWhere((element) => element == null);
-  List<ExchangeInfo> usdToPln = usdToPlnNullable.map((e) => e!).toList();
-  ExchangeGroup usdToPlnGroup = ExchangeGroup.usd2pln(usdToPln);
-  result.usd2pln_exchangeGroup = usdToPlnGroup;
-
-  //Same for Euro to PLN
-  List<ExchangeInfo?> eurToPlnNullable = await Future.wait(markets.map((e) => e.getValueInfo("EUR")));
-  eurToPlnNullable.removeWhere((element) => element == null);
-  List<ExchangeInfo> eurToPln = eurToPlnNullable.map((e) => e!).toList();
-  ExchangeGroup eurToPlnGroup = ExchangeGroup.eur2pln(eurToPln);
-  result.eur2pln_exchangeGroup = eurToPlnGroup;
-
-  //for each input currency, create a ExchangeGroup
-  for (var inputCurrency in inputCurrencies) {
-    List<ExchangeInfo?> exchangesNullable = await Future.wait(markets.map((e) => e.getValueInfo(inputCurrency)));
-    exchangesNullable.removeWhere((element) => element == null);
-    List<ExchangeInfo> exchanges = exchangesNullable.map((e) => e!).toList();
-    ExchangeGroup exchangeGroup = ExchangeGroup(exchanges, usdToPlnGroup, eurToPlnGroup);
-
-    //find all of the tasks with this input currency
-    List<CryptoPair> tasks = task.cryptoPairs.where((element) => element.inputCurrency == inputCurrency).toList();
-    //for each task, create CryptoConversion
-    for (var task in tasks) {
-      CryptoConversion cryptoConversion =
-          CryptoConversion(task, exchangeGroup, (double.parse(task.amount) * exchangeGroup.rate).toString());
-      result.cryptoConversions.add(cryptoConversion);
+  //fetch nbp exchange data
+  for (Future<CurrencyInfo?> element in jobs) {
+    CurrencyInfo? info = await element;
+    if (info != null) {
+      tableDate = info.tableDate;
+      exchangeNbp[info.code] = info;
     }
   }
 
-  //sort so that it was in the same order as on the UI
-  result.cryptoConversions.sort((a, b) => a.task.index.compareTo(b.task.index));
+  final HashSet<String> cryptoTypes = HashSet();
+
+  final orders = task.cryptoPairs;
+
+  //create crypto request list (remove duplicates)
+  for (CryptoPair order in orders) {
+    cryptoTypes.add(order.inputCurrency);
+  }
+
+  HashMap<String, List<ExchangeInfo>> inquiries = HashMap();
+
+  for (String crypto in cryptoTypes) {
+    if (inquiries.containsKey(crypto)) {
+      continue;
+    }
+
+    List<Future<ExchangeInfo>> requestTasks = [];
+
+    for (final market in _exchangeMarkets) {
+      requestTasks.add(market(crypto));
+    }
+
+    final List<ExchangeInfo> exchangeRates = await Future.wait(requestTasks);
+
+    inquiries.putIfAbsent(crypto, () => exchangeRates);
+  }
+
+  //return data
+  List<CryptoConversion> conversions = List.generate(orders.length, (index) {
+    final order = orders[index];
+
+
+
+    final List<ExchangeInfo> inf = [];
+    final exi = inquiries[order.inputCurrency];
+
+    if (exi != null) {
+      for (ExchangeInfo ex in exi) {
+        final curInfo = exchangeNbp[ex.exchangeCurrency];
+
+        String rate = '0';
+
+        if (curInfo != null) {
+          rate = curInfo.rate;
+        }
+
+        ExchangeInfo e = ExchangeInfo.copy(ex);
+        e.calcValue(rate, order.amount);
+        inf.add(e);
+      }
+    }
+
+    final conv = CryptoConversion(order, inf);
+    
+    return conv;
+  });
+
+  CryptoResult result = CryptoResult();
+
+  result.tableDate =tableDate;
+  result.plnExchange = exchangeNbp;
+  result.cryptoConversions = conversions;
 
   return result;
 }
-
-//List representing all available markets
-List<Market> markets = [NBPMarket(), ZondaMarket()];
 
 class CryptoTask {
   // class reprezenting UI input panel
@@ -75,15 +119,15 @@ class CryptoPair {
 
 class CryptoResult {
   // class representing single output row
+  late String tableDate;
+  late HashMap<String, CurrencyInfo?> plnExchange;
   late List<CryptoConversion> cryptoConversions=[];
-  late ExchangeGroup usd2pln_exchangeGroup;
-  late ExchangeGroup eur2pln_exchangeGroup;
+
   //Todo, Mateusz: add more field you would like to display
 }
 
 class CryptoConversion {
-  CryptoPair task;
-  ExchangeGroup exchangeGroup;
-  String resultAmount;
-  CryptoConversion(this.task, this.exchangeGroup, this.resultAmount);
+  CryptoConversion(this.task, this.exchangeInfos);
+  final CryptoPair task;
+  final List<ExchangeInfo> exchangeInfos;
 }
