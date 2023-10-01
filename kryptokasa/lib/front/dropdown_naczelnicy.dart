@@ -8,10 +8,10 @@ class DropdownNaczelnicy extends StatefulWidget {
   const DropdownNaczelnicy({super.key});
 
   @override
-  _DropdownNaczelnicyState createState() => _DropdownNaczelnicyState();
+  DropdownNaczelnicyState createState() => DropdownNaczelnicyState();
 }
 
-class _DropdownNaczelnicyState extends State<DropdownNaczelnicy> {
+class DropdownNaczelnicyState extends State<DropdownNaczelnicy> {
   String? value;
   NaczelnikUrzeduSkarbowego? naczelnikUrzeduSkarbowego;
 
@@ -112,5 +112,9 @@ class _DropdownNaczelnicyState extends State<DropdownNaczelnicy> {
         }
       },
     );
+  }
+
+  bool validate() {
+    return value != null && value!.isNotEmpty;
   }
 }

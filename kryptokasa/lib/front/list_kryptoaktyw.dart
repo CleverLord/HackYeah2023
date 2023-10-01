@@ -17,8 +17,8 @@ class ListKryptoaktywState extends State<ListKryptoaktyw> {
     CryptoTask task = CryptoTask();
     task.cryptoPairs = [];
     for (var row in cryptoRows) {
-      task.cryptoPairs.add(CryptoPair((row.key.currentState as _RowKryptoaktywaState).selectedCrypto!,
-          (row.key.currentState as _RowKryptoaktywaState).amount!));
+      task.cryptoPairs.add(CryptoPair((row.key.currentState as _RowKryptoaktywaState).selectedCrypto,
+          (row.key.currentState as _RowKryptoaktywaState).amount));
     }
     return task;
   }
@@ -72,6 +72,10 @@ class ListKryptoaktywState extends State<ListKryptoaktyw> {
         ],
       ),
     );
+  }
+
+  bool validate() {
+    return cryptoRows.isNotEmpty;
   }
 }
 

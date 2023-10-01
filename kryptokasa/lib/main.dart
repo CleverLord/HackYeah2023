@@ -22,10 +22,18 @@ void main() {
   runApp(const MyApp());
 }
 
+int step = 1;
+
 GlobalKey listKryptoaktywaKey = GlobalKey();
 GlobalKey dropdownNaczelnicyKey = GlobalKey();
 GlobalKey inputSprawaKey = GlobalKey();
 GlobalKey inputWlascicielKey = GlobalKey();
+
+bool isListKryptoaktywaValid = true;
+bool isListKryptoaktywaValidPary = true;
+bool isDropdownNaczelnicyValid = true;
+bool isInputSprawaValid = true;
+bool isInputWlascicielValid = true;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -145,38 +153,36 @@ class _MyHomePageState extends State<MyHomePage> {
                                         const HeaderText("Organ Egzekucyjny"),
                                         const TooltipText(
                                             "Wybierz organ egzekucyjny, który będzie egzekwował zobowiązanie"),
-                                        const ErrorText("Błąd: Organ egzekucyjny nie został wybrany"),
+                                        if (!isDropdownNaczelnicyValid)
+                                          const ErrorText("Błąd: Organ egzekucyjny nie został wybrany"),
                                         padding(8),
-                                        const DropdownNaczelnicy(),
+                                        DropdownNaczelnicy(key: dropdownNaczelnicyKey),
                                         padding(12),
                                       ],
                                       ...[
                                         const HeaderText("Numer Sprawy"),
                                         const TooltipText(
                                             "Podaj numer sprawy, w której organ egzekucyjny wydał decyzję o zablokowaniu kryptoaktyw"),
-                                        const ErrorText("Błąd: Pole nie może być puste"),
+                                        if (!isInputSprawaValid) const ErrorText("Błąd: Pole nie może być puste"),
                                         padding(8),
-                                        CustomTextField(
-                                          key: inputSprawaKey,
-                                        ),
+                                        CustomTextField(key: inputSprawaKey),
                                       ],
                                       ...[
                                         const HeaderText("Dane Właściciela/ki Kryptoaktyw"),
                                         const TooltipText("Podaj dane osoby której dotyczy wniosek."),
-                                        const ErrorText("Błąd: Pole nie może być puste"),
+                                        if (!isInputWlascicielValid) const ErrorText("Błąd: Pole nie może być puste"),
                                         padding(8),
-                                        CustomTextField(
-                                          key: inputWlascicielKey,
-                                        ),
+                                        CustomTextField(key: inputWlascicielKey),
                                       ],
                                       ...[
                                         const HeaderText("Lista Kryptoaktyw"),
                                         const TooltipText("Wybierz i podaj ilość kryptoaktyw do szacowania"),
-                                        const ErrorText("Błąd: Nie wszystkie pola zostały wypełnione"),
+                                        if (!isListKryptoaktywaValidPary)
+                                          const ErrorText("Błąd: Nie wszystkie pola zostały wypełnione"),
+                                        if (!isListKryptoaktywaValid)
+                                          const ErrorText("Błąd: Brak kryptoaktyw do szacowania"),
                                         padding(8),
-                                        ListKryptoaktyw(
-                                          key: listKryptoaktywaKey,
-                                        ),
+                                        ListKryptoaktyw(key: listKryptoaktywaKey),
                                       ],
                                     ],
                                   ),
@@ -191,8 +197,41 @@ class _MyHomePageState extends State<MyHomePage> {
                                 height: 50.0,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    ProcessTask((listKryptoaktywaKey.currentState! as ListKryptoaktywState).task())
-                                        .then((value) => print(value));
+                                    isListKryptoaktywaValid =
+                                        (listKryptoaktywaKey.currentState! as ListKryptoaktywState).validate();
+                                    isDropdownNaczelnicyValid =
+                                        (dropdownNaczelnicyKey.currentState! as DropdownNaczelnicyState).validate();
+                                    isInputSprawaValid =
+                                        (inputSprawaKey.currentState! as CustomTextFieldState).validate();
+                                    isInputWlascicielValid =
+                                        (inputWlascicielKey.currentState! as CustomTextFieldState).validate();
+
+                                    if (!isDropdownNaczelnicyValid ||
+                                        !isInputSprawaValid ||
+                                        !isInputWlascicielValid ||
+                                        !isListKryptoaktywaValid) {
+                                      setState(() {});
+                                      return;
+                                    }
+
+                                    var task = (listKryptoaktywaKey.currentState! as ListKryptoaktywState).task();
+                                    //test is any value in task is empty
+                                    if (task.cryptoPairs.any((element) =>
+                                        element.amount == null ||
+                                        element.amount!.isEmpty ||
+                                        element.inputCurrency == null ||
+                                        element.inputCurrency!.isEmpty)) {
+                                      isListKryptoaktywaValidPary = false;
+                                      setState(() {});
+                                      return;
+                                    } else {
+                                      isListKryptoaktywaValidPary = true;
+                                      setState(() {});
+                                    }
+
+                                    step = 2;
+                                    setState(() {});
+                                    ProcessTask(task).then((value) => print(value));
                                   },
                                   style: ElevatedButton.styleFrom(
                                     shape: RoundedRectangleBorder(
@@ -669,9 +708,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                       height: 50.0,
                                       child: ElevatedButton(
                                         onPressed: () {
-                                          ProcessTask(
-                                                  (listKryptoaktywaKey.currentState! as ListKryptoaktywState).task())
-                                              .then((value) => print(value));
+                                          setState(() {
+                                            step = 1;
+                                          });
                                         },
                                         style: ElevatedButton.styleFrom(
                                           shape: RoundedRectangleBorder(
@@ -697,18 +736,145 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                     ),
-                    /*
-                    const ApprovedBlocker(
-                      top: 114.0,
-                      bottom: 34.0,
-                      left: 34.0,
-                    ),
-                    const ApprovedBlocker(
-                      top: 114.0,
-                      bottom: 34.0,
-                      left: 34.0 + 550.0 + 34.0,
-                      right: 34.0,
-                    ),*/
+                    if (step > 1)
+                      const ApprovedBlocker(
+                        top: 114.0,
+                        bottom: 34.0,
+                        left: 34.0,
+                      ),
+                    if (step < 2)
+                      const LockedBlocker(
+                        top: 114.0,
+                        bottom: 34.0,
+                        left: 34.0 + 550.0 + 34.0,
+                        right: 34.0,
+                      ),
+                    if (step > 2)
+                      const ApprovedBlocker(
+                        top: 114.0,
+                        bottom: 34.0,
+                        left: 34.0 + 550.0 + 34.0,
+                        right: 34.0,
+                      ),
+                    //add exit prompt
+
+                    if (false)
+                      Positioned(
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 34.0, horizontal: 22.0),
+                          decoration: BoxDecoration(
+                            color: Colors.black54,
+                            border: Border.all(
+                              color: Colors.black12,
+                              width: 1.0,
+                            ),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(1.0),
+                            ),
+                          ),
+                          child: Center(
+                            child: Container(
+                              width: 500,
+                              height: 200,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.black12,
+                                  width: 1.0,
+                                ),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(1.0),
+                                ),
+                              ),
+                              child: Column(
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "Czy na pewno chcesz wyjść?",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "Wszystkie niezatwierdzone dane zostaną utracone.",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: SizedBox(
+                                          height: 50.0,
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(1),
+                                              ),
+                                              backgroundColor: blue,
+                                            ),
+                                            child: Text(
+                                              'Tak',
+                                              style: GoogleFonts.inter(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: SizedBox(
+                                          height: 50.0,
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(1),
+                                              ),
+                                              backgroundColor: red,
+                                            ),
+                                            child: Text(
+                                              'Nie',
+                                              style: GoogleFonts.inter(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -957,14 +1123,34 @@ class CustomTextField extends StatefulWidget {
   });
 
   @override
-  State<CustomTextField> createState() => _CustomTextFieldState();
+  State<CustomTextField> createState() => CustomTextFieldState();
 }
 
-class _CustomTextFieldState extends State<CustomTextField> {
+class CustomTextFieldState extends State<CustomTextField> {
   String? value;
+  final myController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    myController.addListener(
+      () => setState(() {
+        value = myController.text;
+      }),
+    );
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: myController,
       decoration: InputDecoration(
         isDense: true,
         contentPadding: const EdgeInsets.all(12),
@@ -995,18 +1181,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
         FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9/\-\.]')),
       ],
       maxLength: 100,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Pole nie może być puste!';
-        }
-        return null;
-      },
       onSaved: (value) {
         setState(() {
+          print(value);
           this.value = value;
         });
       },
     );
+  }
+
+  bool validate() {
+    return value != null && value!.isNotEmpty;
   }
 }
 
@@ -1072,10 +1257,56 @@ class ApprovedBlocker extends StatelessWidget {
           ),
         ),
         width: 550,
-        child: const Center(
+        child: Center(
           child: Icon(
             Icons.check_circle,
-            color: Color.fromARGB(255, 0, 160, 50),
+            color: green,
+            size: 76.0,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class LockedBlocker extends StatelessWidget {
+  final double? top;
+  final double? bottom;
+  final double? left;
+  final double? right;
+  const LockedBlocker({
+    Key? key,
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: top,
+      bottom: bottom,
+      left: left,
+      right: right,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 34.0, horizontal: 22.0),
+        decoration: BoxDecoration(
+          color: Colors.black54,
+          border: Border.all(
+            color: Colors.black12,
+            width: 1.0,
+          ),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(1.0),
+          ),
+        ),
+        width: 550,
+        child: const Center(
+          child: Icon(
+            //locked icon
+            Icons.lock_outline_rounded,
+            color: Colors.grey,
             size: 76.0,
           ),
         ),
@@ -1146,7 +1377,7 @@ class _HeadbarState extends State<Headbar> {
             },
           ),
           WinBarButton(
-            window.isMaximized ? "🗕" : "🗖",
+            window.isMaximized ? "🗖" : "🗖",
             action: () {
               window.toggle();
               setState(() {});
