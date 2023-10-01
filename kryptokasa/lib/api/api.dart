@@ -3,24 +3,17 @@ import 'dart:collection';
 
 import 'package:kryptokasa/api/currency_info.dart';
 import 'package:kryptokasa/api/markets/gemini.dart' as gemini;
-<<<<<<< Updated upstream
 import 'package:kryptokasa/api/markets/zonda.dart' as zonda;
 import 'package:kryptokasa/api/nbp.dart' as nbp;
-=======
 import 'package:kryptokasa/api/markets/binance.dart' as binance;
->>>>>>> Stashed changes
 
 import 'exchangeInfo.dart';
 
-<<<<<<< Updated upstream
-List<Future<ExchangeInfo> Function(String)> _exchangeMarkets = [zonda.getValueInfo, gemini.getValueInfo];
-=======
 List<Future<ExchangeInfo> Function (String)> _exchangeMarkets = [
   zonda.getValueInfo,
   gemini.getValueInfo,
   binance.getValueInfo
 ];
->>>>>>> Stashed changes
 
 Future<CryptoResult> ProcessTask(CryptoTask task) async {
   // main function, which is called from UI
