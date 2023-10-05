@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
   CustomTextField inputSprawa = CustomTextField(key: inputSprawaKey);
   CustomTextField inputWlasciciel = CustomTextField(
     key: inputWlascicielKey,
-    regex: r'^[a-zA-Z0-9\s]+$',
+    regex: r'^[a-zA-Z0-9\s_@./#&+-]+$',
   );
   @override
   void initState() {
